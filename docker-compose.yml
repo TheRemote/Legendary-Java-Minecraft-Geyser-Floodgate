@@ -1,0 +1,20 @@
+# Minecraft Java Paper Server + Geyser + Floodgate Docker Container - Docker Compose
+# Author: James A. Chambers - https://jamesachambers.com/minecraft-java-bedrock-server-together-geyser-floodgate/
+# GitHub Repository: https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate
+
+# To run multiple servers change the volume name under both "volumes" sections and select different ports
+version: "3.5"
+services:
+  minecraftbe:
+    image: 05jchambers/legendary-minecraft-geyser-floodgate:latest
+    restart: "unless-stopped"
+    ports:
+      - 25565:25565
+    volumes:
+      - minecraft:/minecraft
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+    entrypoint: [ "/bin/bash", "/scripts/start.sh" ]
+volumes:
+  minecraft:
+    driver: local

@@ -1,0 +1,24 @@
+image: 05jchambers/legendary-minecraft-geyser-floodgate:latest
+manifests:
+  - image: 05jchambers/legendary-minecraft-geyser-floodgate:amd64
+    platform:
+      architecture: amd64
+      os: linux
+  - image: 05jchambers/legendary-minecraft-geyser-floodgate:armv7
+    platform:
+      architecture: arm
+      os: linux
+      variant: v7
+  - image: 05jchambers/legendary-minecraft-geyser-floodgate:arm64v8
+    platform:
+      architecture: arm64
+      os: linux
+      variant: v8
+  - image: 05jchambers/legendary-minecraft-geyser-floodgate:ppc64le
+    platform:
+      architecture: ppc64le
+      os: linux
+  - image: 05jchambers/legendary-minecraft-geyser-floodgate:s390x
+    platform:
+      architecture: s390x
+      os: linux
