@@ -8,7 +8,7 @@ The <a href="https://jamesachambers.com/legendary-paper-minecraft-java-container
 The <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate" target="_blank" rel="noopener">official GitHub repository is located here</a>.<br>
 The <a href="https://hub.docker.com/r/05jchambers/legendary-minecraft-geyser-floodgate" target="_blank" rel="noopener">official Docker Hub repository is located here</a>.<br>
 <br>
-The <a href="https://github.com/TheRemote/Legendary-Bedrock-Container" target="_blank" rel="noopener">Bedrock version of the Docker container is available here</a>.  This is for Java Minecraft.<br>
+The <a href="https://github.com/TheRemote/Legendary-Bedrock-Container" target="_blank" rel="noopener">Bedrock version of the Docker container is available here</a>.  This is for Java Minecraft but Bedrock players can connect to it.<br>
  
 <h2>Features</h2>
 <ul>
