@@ -30,7 +30,7 @@ First you must create a named Docker volume.  This can be done with:<br>
 
 Now you may launch the server and open the ports necessary with one of the following Docker launch commands:<br>
 <br>
-With default port:
+With default ports:
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 With custom ports (this example uses 12345 for the Java port and 54321 for the Bedrock port):
 <pre>docker run -it -v yourvolumename:/minecraft -p 12345:12345 -e Port=12345 -p 54321:54321/udp -p 54321:54321 -e BedrockPort=54321 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
