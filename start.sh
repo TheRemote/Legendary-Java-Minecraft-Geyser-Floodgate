@@ -131,7 +131,7 @@ else
 
     # Update Floodgate if new version is available
     FloodgateMD5=$(curl -k -L -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" 'https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/build/libs/floodgate-spigot.jar/*fingerprint*/' | grep md5 | cut -d'>' -f3 | cut -d' ' -f2 | cut -d'<' -f1)
-    if [ -z "$FloodgateMD5" ]; then
+    if [ -n "$FloodgateMD5" ]; then
         LocalMD5=$(md5sum plugins/Floodgate-Spigot.jar | cut -d' ' -f1)
         if [ -e plugins/Floodgate-Spigot.jar ] && [ "$LocalMD5" = "$FloodgateMD5" ]; then
             echo "Floodgate is up to date"
@@ -145,7 +145,7 @@ else
 
     # Update Geyser if new version is available
     GeyserMD5=$(curl -k -L -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" 'https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar/*fingerprint*/' | grep md5 | cut -d'>' -f3 | cut -d' ' -f2 | cut -d'<' -f1)
-    if [ -z "$GeyserMD5" ]; then
+    if [ -n "$GeyserMD5" ]; then
         LocalMD5=$(md5sum plugins/Geyser-Spigot.jar | cut -d' ' -f1)
         if [ -e plugins/Geyser-Spigot.jar ] && [ "$LocalMD5" = "$GeyserMD5" ]; then
             echo "Geyser is up to date"
@@ -164,9 +164,9 @@ AcceptEULA=$(echo eula=true >eula.txt)
 # Change ports in server.properties
 sed -i "/server-port=/c\server-port=$Port" /minecraft/server.properties
 # Change Bedrock port in Geyser config
-sed -i "0,/  port: /c\  port: $BedrockPort" /minecraft/plugins/Geyser-Spigot/config.yml
-
-sed "0,/  port: /c\  port: $BedrockPort" config.yml
+if [ -e /minecraft/plugins/Geyser-Spigot/config.yml ]; then
+    sed -i "0,/  port: /c\  port: $BedrockPort" /minecraft/plugins/Geyser-Spigot/config.yml
+fi
 
 # Start server
 echo "Starting Minecraft server..."
