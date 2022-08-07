@@ -124,7 +124,7 @@ else
     Build=$(($Build + 0))
     if [[ $Build != 0 ]]; then
         echo "Latest paperclip build found: $Build"
-        curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o paperclip.jar "https://papermc.io/api/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
+        curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/paperclip.jar "https://papermc.io/api/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
     else
         echo "Unable to retrieve latest Paper build (got result of $Build)"
     fi
@@ -133,11 +133,11 @@ else
     FloodgateMD5=$(curl -k -L -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" 'https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/build/libs/floodgate-spigot.jar/*fingerprint*/' | grep md5 | cut -d'>' -f3 | cut -d' ' -f2 | cut -d'<' -f1)
     if [ -n "$FloodgateMD5" ]; then
         LocalMD5=$(md5sum plugins/Floodgate-Spigot.jar | cut -d' ' -f1)
-        if [ -e plugins/Floodgate-Spigot.jar ] && [ "$LocalMD5" = "$FloodgateMD5" ]; then
+        if [ -e /minecraft/plugins/Floodgate-Spigot.jar ] && [ "$LocalMD5" = "$FloodgateMD5" ]; then
             echo "Floodgate is up to date"
         else
             echo "Updating Floodgate..."
-            curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o plugins/Floodgate-Spigot.jar "https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/build/libs/floodgate-spigot.jar"
+            curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/Floodgate-Spigot.jar "https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/lastSuccessfulBuild/artifact/spigot/build/libs/floodgate-spigot.jar"
         fi
     else
         echo "Unable to check for updates to Floodgate!"
@@ -147,11 +147,11 @@ else
     GeyserMD5=$(curl -k -L -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" 'https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar/*fingerprint*/' | grep md5 | cut -d'>' -f3 | cut -d' ' -f2 | cut -d'<' -f1)
     if [ -n "$GeyserMD5" ]; then
         LocalMD5=$(md5sum plugins/Geyser-Spigot.jar | cut -d' ' -f1)
-        if [ -e plugins/Geyser-Spigot.jar ] && [ "$LocalMD5" = "$GeyserMD5" ]; then
+        if [ -e /minecraft/plugins/Geyser-Spigot.jar ] && [ "$LocalMD5" = "$GeyserMD5" ]; then
             echo "Geyser is up to date"
         else
             echo "Updating Geyser..."
-            curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o plugins/Geyser-Spigot.jar "https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar"
+            curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/Geyser-Spigot.jar "https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/lastSuccessfulBuild/artifact/bootstrap/spigot/target/Geyser-Spigot.jar"
         fi
     else
         echo "Unable to check for updates to Geyser!"
