@@ -1,4 +1,6 @@
-# Legendary Java Minecraft + Geyser + Floodgate + Paper Dedicated Server for Docker 
+# Legendary Java Minecraft + Geyser + Floodgate + Paper Dedicated Server for Docker
+<img src="https://jamesachambers.com/wp-content/uploads/2022/08/Minecraft-Geyser-Docker-Container-1024x576.webp" alt="Legendary Minecraft Geyser Container">
+
 This is the Docker containerized version of my <a href="https://github.com/TheRemote/RaspberryPiMinecraft">Minecraft Java Paper Dedicated Server for Linux/Raspberry Pi</a> scripts but with Geyser and Floodgate included.
 
 Geyser and Floodgate allow Minecraft Bedrock players to join your Java server!
