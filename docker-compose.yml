@@ -10,6 +10,8 @@ services:
     restart: "unless-stopped"
     ports:
       - 25565:25565
+      - 19132:19132
+      - 19132:19132/udp
     volumes:
       - minecraft:/minecraft
     stdin_open: true # docker run -i
