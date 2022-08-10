@@ -96,7 +96,7 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
     <ul>
         <li>Adjust query.port in server.properties to be the same as the main server port to keep the "ping port" working properly</li>
         <li>Add enforce-secure-profile=false to default server.properties to prevent login errors</li>
-        <li>Add text editor inside the container (vim) for diagnostic/troubleshooting purposes</li>
+        <li>Add text editor inside the container (nano) for diagnostic/troubleshooting purposes</li>
     </ul>
   <li>August 6th 2022</li>
     <ul>
