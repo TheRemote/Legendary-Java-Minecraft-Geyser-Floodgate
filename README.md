@@ -58,6 +58,9 @@ On Linux it's typically available at: <pre>/var/lib/docker/volumes/yourvolumenam
 On Windows it's at <pre>C:\ProgramData\DockerDesktop</pre> but may be located at something more like <pre>\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes\</pre>if you are using WSL (Windows Subsystem for Linux<br>
 <br>
 On Mac it's typically <pre>~/Library/Containers/com.docker.docker/Data/vms/0/</pre><br>
+If you are using Docker Desktop on Mac then you need to access the Docker VM with the following command first:
+<pre>screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty</pre>
+You can then normally access the Docker volumes using the path you found in the first step with docker volume inspect<br><br>
 Most people will want to edit server.properties.  You can make the changes to the file and then restart the container to make them effective.<br>
 <br>
 Backups are stored in the "backups" folder<br>
@@ -89,6 +92,12 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 
 <h2>Update History</h2>
 <ul>
+  <li>August 10th 2022</li>
+    <ul>
+        <li>Adjust query.port in server.properties to be the same as the main server port to keep the "ping port" working properly</li>
+        <li>Add enforce-secure-profile=false to default server.properties to prevent login errors</li>
+        <li>Add text editor inside the container (vim) for diagnostic/troubleshooting purposes</li>
+    </ul>
   <li>August 6th 2022</li>
     <ul>
         <li>Initial release</li>

@@ -163,6 +163,7 @@ AcceptEULA=$(echo eula=true >eula.txt)
 
 # Change ports in server.properties
 sed -i "/server-port=/c\server-port=$Port" /minecraft/server.properties
+sed -i "/query\.port=/c\query\.port=$Port" /minecraft/server.properties
 # Change Bedrock port in Geyser config
 if [ -e /minecraft/plugins/Geyser-Spigot/config.yml ]; then
     sed -i "0,/  port: /c\  port: $BedrockPort" /minecraft/plugins/Geyser-Spigot/config.yml
