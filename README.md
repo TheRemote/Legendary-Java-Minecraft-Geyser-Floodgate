@@ -92,6 +92,10 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 
 <h2>Update History</h2>
 <ul>
+  <li>August 17th 2022</li>
+    <ul>
+        <li>Add XX:-UseAESCTRIntrinsics to java launch line to prevent encryption issue on 10th Gen Intel processors</li>
+    </ul>
   <li>August 10th 2022</li>
     <ul>
         <li>Adjust query.port in server.properties to be the same as the main server port to keep the "ping port" working properly</li>
