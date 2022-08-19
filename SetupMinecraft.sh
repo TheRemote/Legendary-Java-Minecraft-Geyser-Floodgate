@@ -21,7 +21,7 @@ Install_Java() {
     rm -f /jre18.tar.gz
     mv /jdk-* /jre
   elif [[ "$CPUArch" == *"x86_64"* ]]; then
-    curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.2%2B9/OpenJDK18U-jre_x64_linux_hotspot_18.0.2_9.tar.gz -o /jre18.tar.gz -L
+    curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.1%2B10/OpenJDK18U-jre_x64_linux_hotspot_18.0.1_10.tar.gz -o /jre18.tar.gz -L
     tar -xf /jre18.tar.gz
     rm -f /jre18.tar.gz
     mv /jdk-* /jre
