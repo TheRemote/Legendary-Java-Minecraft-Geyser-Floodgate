@@ -92,6 +92,10 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 
 <h2>Update History</h2>
 <ul>
+  <li>August 22nd 2022</li>
+    <ul>
+        <li>Attempt to fix screen on Azure instances</li>
+    </ul>
   <li>August 18th 2022</li>
     <ul>
         <li>Test rolling back OpenJDK version slightly to earlier version of OpenJDK 18 previous to 10th-11th gen Intel CPU bugs</li>
