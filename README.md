@@ -71,6 +71,9 @@ Log files with timestamps are stored in the "logs" folder.<br>
 The Geyser configuration is located in plugins/Geyser-Spigot/config.yml<br>
 The Floodgate configuration is located in plugins/floodgate/config.yml<br>
 
+<h2>NoScreen Environment Variable</h2>
+Disables launching the server with the screen application which prevents needing an interactive terminal (but disables some logging): <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoScreen=Y 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+
 <h2>Plugins</h2>
 This is a "Paper" Minecraft server which has plugin compatibility with Paper / Spigot / Bukkit.<br>
 <br>
