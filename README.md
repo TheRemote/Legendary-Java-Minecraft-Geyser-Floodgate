@@ -40,6 +40,8 @@ With a custom Minecraft version (add -e Version=1.X.X, must be present on Paper'
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e Version=1.17.1 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 With a maximum memory limit in megabytes (optional, prevents crashes on platforms with limited memory, -e MaxMemory=2048):
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e MaxMemory=2048 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+Without using the screen application (useful if the container won't launch saying "Must be connected to a terminal.", will disable some logging features):
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoScreen=Y 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
 <h2>Configuration / Accessing Server Files</h2>
 The server data is stored where Docker stores your volumes.  This is typically a folder on the host OS that is shared and mounted with the container.<br>
@@ -94,7 +96,8 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 <ul>
   <li>August 22nd 2022</li>
     <ul>
-        <li>Add NoScreen environment variable -- thjs disables screen which prevents needing an interactive terminal (but disables some logging)</li>
+        <li>Add NoScreen environment variable -- disables screen which prevents needing an interactive terminal (but disables some logging)</li>
+        <li>Fix issue #1 (thanks Sam7, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/1">issue #1</a>)</li>
     </ul>
   <li>August 18th 2022</li>
     <ul>

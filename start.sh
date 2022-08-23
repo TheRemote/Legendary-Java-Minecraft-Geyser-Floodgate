@@ -176,12 +176,14 @@ if [[ -z "$MaxMemory" ]] || [[ "$MaxMemory" -le 0 ]]; then
     if [ -z "$NoScreen" ]; then
         screen -L -Logfile /minecraft/logs/minecraft.$(date +%Y.%m.%d.%H.%M.%S).log -mS minecraft /jre/bin/java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -jar /minecraft/paperclip.jar
     else
+        echo "NoScreen switch present -- launching without screen (logging will be negatively impacted)"
         /jre/bin/java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -jar /minecraft/paperclip.jar
     fi
 else
     if [ -z "$NoScreen" ]; then
         screen -L -Logfile /minecraft/logs/minecraft.$(date +%Y.%m.%d.%H.%M.%S).log -mS minecraft /jre/bin/java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -Xmx${MaxMemory}M -jar /minecraft/paperclip.jar
     else
+        echo "NoScreen switch present -- launching without screen (logging will be negatively impacted)"
         /jre/bin/java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -Xmx${MaxMemory}M -jar /minecraft/paperclip.jar
     fi
 fi
