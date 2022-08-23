@@ -94,7 +94,7 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 <ul>
   <li>August 22nd 2022</li>
     <ul>
-        <li>Attempt to fix screen on Azure instances</li>
+        <li>Add NoScreen environment variable -- thjs disables screen which prevents needing an interactive terminal (but disables some logging)</li>
     </ul>
   <li>August 18th 2022</li>
     <ul>

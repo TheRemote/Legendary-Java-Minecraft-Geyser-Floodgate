@@ -26,6 +26,9 @@ ENV MaxMemory=
 # Optional Paper Minecraft Version override
 ENV Version="1.19.2"
 
+# Optional switch to prevent usage of screen (disables logging but may fix container launch issues on some platforms)
+ENV NoScreen=
+
 # IPV4 Ports
 EXPOSE 25565/tcp
 EXPOSE 19132/tcp
