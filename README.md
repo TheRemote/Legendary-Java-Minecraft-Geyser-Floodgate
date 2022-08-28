@@ -99,6 +99,10 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 <ul>
   <li>August 22nd 2022</li>
     <ul>
+        <li>Fix broken Geyser-Spigot config.yml issue (thanks vecnar, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/2">issue #2</a>)</li>
+    </ul>
+  <li>August 22nd 2022</li>
+    <ul>
         <li>Add NoScreen environment variable -- disables screen which prevents needing an interactive terminal (but disables some logging)</li>
         <li>Fix issue #1 (thanks Sam7, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/1">issue #1</a>)</li>
     </ul>
