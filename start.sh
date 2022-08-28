@@ -46,8 +46,8 @@ fi
 if [ ! -d "/minecraft/backups" ]; then
     mkdir -p /minecraft/backups
 fi
-if [ ! -d "/minecraft/plugins" ]; then
-    mkdir -p /minecraft/plugins
+if [ ! -d "/minecraft/plugins/Geyser-Spigot" ]; then
+    mkdir -p /minecraft/plugins/Geyser-Spigot
 fi
 
 # Check if network interfaces are up
@@ -107,6 +107,9 @@ if [ ! -e "/minecraft/spigot.yml" ]; then
 fi
 if [ ! -e "/minecraft/server.properties" ]; then
     cp /scripts/server.properties /minecraft/server.properties
+fi
+if [ ! -e "/minecraft/plugins/Geyser-Spigot/config.yml" ]; then
+    cp /scripts/config.yml /minecraft/plugins/Geyser-Spigot/config.yml
 fi
 
 # Test internet connectivity first
