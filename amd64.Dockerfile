@@ -12,7 +12,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install qemu-user-s
 FROM --platform=linux/amd64 ubuntu:latest
 
 # Fetch dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install sudo curl unzip screen net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install tzdata sudo curl unzip screen net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
 
 # Set port environment variable
 ENV Port=25565
@@ -28,6 +28,9 @@ ENV Version="1.19.2"
 
 # Optional switch to prevent usage of screen (disables logging but may fix container launch issues on some platforms)
 ENV NoScreen=
+
+# Optional Timezone
+ENV Timezone="America/Denver"
 
 # IPV4 Ports
 EXPOSE 25565/tcp

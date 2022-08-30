@@ -42,6 +42,8 @@ With a maximum memory limit in megabytes (optional, prevents crashes on platform
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e MaxMemory=2048 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 Without using the screen application (useful if the container won't launch saying "Must be connected to a terminal.", will disable some logging features):
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoScreen=Y 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+Using a different timezone:
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
 <h2>Configuration / Accessing Server Files</h2>
 The server data is stored where Docker stores your volumes.  This is typically a folder on the host OS that is shared and mounted with the container.<br>
@@ -74,6 +76,9 @@ The Floodgate configuration is located in plugins/floodgate/config.yml<br>
 <h2>NoScreen Environment Variable</h2>
 Disables launching the server with the screen application which prevents needing an interactive terminal (but disables some logging): <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoScreen=Y 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
+<h2>TZ (timezone) Environment Variable</h2>
+You can change the timezone from the default "America/Denver" using this environment variable: <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+
 <h2>Plugins</h2>
 This is a "Paper" Minecraft server which has plugin compatibility with Paper / Spigot / Bukkit.<br>
 <br>
@@ -97,6 +102,10 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 
 <h2>Update History</h2>
 <ul>
+  <li>August 29nd 2022</li>
+    <ul>
+        <li>Add optional TZ environment variable to set timezone</li>
+    </ul>
   <li>August 28nd 2022</li>
     <ul>
         <li>Additional fix for #2 by adding a default config.yml for the server to use for Geyser (thanks vecnar, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/2">issue #2</a>)</li>
