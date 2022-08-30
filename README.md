@@ -77,7 +77,7 @@ The Floodgate configuration is located in plugins/floodgate/config.yml<br>
 Disables launching the server with the screen application which prevents needing an interactive terminal (but disables some logging): <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoScreen=Y 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
 <h2>TZ (timezone) Environment Variable</h2>
-You can change the timezone from the default "America/Denver" using this environment variable: <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+You can change the timezone from the default "America/Denver" to own timezone using this environment variable: <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
 <h2>Plugins</h2>
 This is a "Paper" Minecraft server which has plugin compatibility with Paper / Spigot / Bukkit.<br>
@@ -104,6 +104,7 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 <ul>
   <li>August 29nd 2022</li>
     <ul>
+        <li>Add environment variables section to docker-compose.yml template</li>
         <li>Add optional TZ environment variable to set timezone</li>
     </ul>
   <li>August 28nd 2022</li>
