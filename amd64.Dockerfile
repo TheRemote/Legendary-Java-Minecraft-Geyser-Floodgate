@@ -30,7 +30,7 @@ ENV Version="1.19.2"
 ENV NoScreen=
 
 # Optional Timezone
-ENV Timezone="America/Denver"
+ENV TZ="America/Denver"
 
 # IPV4 Ports
 EXPOSE 25565/tcp
