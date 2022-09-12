@@ -94,7 +94,7 @@ A popular place to get plugins is: <a href="https://dev.bukkit.org/bukkit-plugin
 
 <h2>Troubleshooting Note - Oracle Virtual Machines</h2>
 A very common problem people have with the Oracle Virtual Machine tutorials out there that typically show you how to use a free VM is that the VM is much more difficult to configure than just about any other product / offering out there.<br>
-The symptom you will have is that nobody will be able to connect.  This is not because of the second set of ports that it shows after startup (that is a nearly 3-4 years now old Bedrock bug and all servers do it).<br>
+The symptom you will have is that nobody will be able to connect.<br>
 It is because there are several steps you need to take to open the ports on the Oracle VM.  You need to both:<br>
 <ul>
   <li>Set the ingress ports (TCP/UDP) in the Virtual Cloud Network (VCN) security list</li>
