@@ -132,6 +132,7 @@ See the following links:<br>
   <li>September 20th 2022</li>
     <ul>
         <li>Fixed Geyser update code (thanks vp-en)</li>
+        <li>Update to OpenJDK 18.0.2.1</li>
     </ul>
   <li>August 29th 2022</li>
     <ul>
