@@ -129,6 +129,10 @@ See the following links:<br>
 
 <h2>Update History</h2>
 <ul>
+  <li>September 20th 2022</li>
+    <ul>
+        <li>Fixed Geyser update code (thanks vp-en)</li>
+    </ul>
   <li>August 29th 2022</li>
     <ul>
         <li>Add environment variables section to docker-compose.yml template</li>
