@@ -129,6 +129,10 @@ See the following links:<br>
 
 <h2>Update History</h2>
 <ul>
+  <li>September 27th 2022</li>
+    <ul>
+        <li>Fix SIGTERM catching in certain situations by running screen/java with the "exec" command which passes execution completely to that process (thanks vp-en)</li>
+    </ul>
   <li>September 20th 2022</li>
     <ul>
         <li>Fixed Geyser update code (thanks vp-en)</li>
