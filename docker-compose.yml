@@ -22,7 +22,6 @@ services:
       Port: "25565"
       BedrockPort: "19132"
       TZ: "America/Denver" # timezone
-      #NoScreen: "Y" # Disables use of screen
       #MaxMemory: 2048 # Maximum memory usage for Java
       #Version: 1.19.2 # Use custom version
 volumes:

@@ -21,7 +21,6 @@ The <a href="https://github.com/TheRemote/Legendary-Bedrock-Container" target="_
   <li>Plugin support for Paper + Spigot + Bukkit</li>
   <li>Installs and configures OpenJDK 18</li>
   <li>Automatic backups to minecraft/backups when server restarts</li>
-  <li>Full logging available in minecraft/logs folder</li>
   <li>Updates automatically to the latest version when server is started</li>
   <li>Runs on all Docker platforms including Raspberry Pi</li>
 </ul>
@@ -40,8 +39,6 @@ With a custom Minecraft version (add -e Version=1.X.X, must be present on Paper'
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e Version=1.17.1 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 With a maximum memory limit in megabytes (optional, prevents crashes on platforms with limited memory, -e MaxMemory=2048):
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e MaxMemory=2048 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
-Without using the screen application (useful if the container won't launch saying "Must be connected to a terminal.", will disable some logging features):
-<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoScreen=Y 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 Using a different timezone:
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
@@ -69,12 +66,8 @@ Most people will want to edit server.properties.  You can make the changes to th
 <br>
 Backups are stored in the "backups" folder<br>
 <br>
-Log files with timestamps are stored in the "logs" folder.<br>
 The Geyser configuration is located in plugins/Geyser-Spigot/config.yml<br>
 The Floodgate configuration is located in plugins/floodgate/config.yml<br>
-
-<h2>NoScreen Environment Variable</h2>
-Disables launching the server with the screen application which prevents needing an interactive terminal (but disables some logging): <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoScreen=Y 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
 <h2>TZ (timezone) Environment Variable</h2>
 You can change the timezone from the default "America/Denver" to own timezone using this environment variable: <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
@@ -132,6 +125,7 @@ See the following links:<br>
   <li>September 27th 2022</li>
     <ul>
         <li>Fix SIGTERM catching in certain situations by running screen/java with the "exec" command which passes execution completely to that process (thanks vp-en)</li>
+        <li>Remove screen dependency</li>
     </ul>
   <li>September 20th 2022</li>
     <ul>
