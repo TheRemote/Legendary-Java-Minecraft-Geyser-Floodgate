@@ -124,7 +124,7 @@ See the following links:<br>
 <ul>
   <li>September 27th 2022</li>
     <ul>
-        <li>Fix SIGTERM catching in certain situations by running screen/java with the "exec" command which passes execution completely to that process (thanks vp-en)</li>
+        <li>Fix SIGTERM catching in certain situations by running java with the "exec" command which passes execution completely to that process (thanks vp-en)</li>
         <li>Remove screen dependency</li>
     </ul>
   <li>September 20th 2022</li>
