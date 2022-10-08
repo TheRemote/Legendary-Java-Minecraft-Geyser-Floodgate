@@ -104,12 +104,23 @@ Here are some additional links:<br>
 </ul>
 
 <h2>Troubleshooting Note - Hyper-V</h2>
-There is a weird bug in Hyper-V that breaks UDP connections on the Minecraft server.  The fix for this is that you have to use a Generation 1 VM with the Legacy LAN network driver.<br>
+There is a weird bug in Hyper-V that breaks UDP connections on the Minecraft server.  There are two fixes for this.  The simplest fix is that you have to use a Generation 1 VM with the Legacy LAN network driver.<br>
 See the following links:<br>
 <ul>
 <li>https://jamesachambers.com/minecraft-bedrock-edition-ubuntu-dedicated-server-guide/comment-page-54/#comment-13863</li>
 <li>https://jamesachambers.com/minecraft-bedrock-edition-ubuntu-dedicated-server-guide/comment-page-56/#comment-14207</li>
 </ul>
+There is a second fix that was <a href="https://jamesachambers.com/legendary-minecraft-bedrock-container/comment-page-3/#comment-14654">shared by bpsimons here</a>.<br>You need to install ethtool first with sudo apt install ethtool.  Next in your /etc/network/interfaces file add "offload-tx off" to the bottom as the issue appears to be with TX offloading.<br>
+Here's an example:<pre># The primary network interface
+auto eth0
+iface eth0 inet static
+address 192.168.1.5
+netmask 255.255.255.0
+network 192.168.1.0
+broadcast 192.168.1.255
+gateway 192.168.1.1
+offload-tx off</pre>
+This can also be done non-persistently with the following ethtool command: <pre>ethtool -K eth0 tx off</pre>
 
 <h2>Buy A Coffee / Donate</h2>
 <p>People have expressed some interest in this (you are all saints, thank you, truly)</p>
@@ -122,50 +133,54 @@ See the following links:<br>
 
 <h2>Update History</h2>
 <ul>
+  <li>October 8th 2022</li>
+    <ul>
+      <li>Upgrade to OpenJDK 19</li>
+    </ul>
   <li>September 27th 2022</li>
     <ul>
-        <li>Fix SIGTERM catching in certain situations by running java with the "exec" command which passes execution completely to that process (thanks vp-en)</li>
-        <li>Remove screen dependency</li>
+      <li>Fix SIGTERM catching in certain situations by running java with the "exec" command which passes execution completely to that process (thanks vp-en)</li>
+      <li>Remove screen dependency</li>
     </ul>
   <li>September 20th 2022</li>
     <ul>
-        <li>Fixed Geyser update code (thanks vp-en)</li>
-        <li>Update to OpenJDK 18.0.2.1</li>
+      <li>Fixed Geyser update code (thanks vp-en)</li>
+      <li>Update to OpenJDK 18.0.2.1</li>
     </ul>
   <li>August 29th 2022</li>
     <ul>
-        <li>Add environment variables section to docker-compose.yml template</li>
-        <li>Add optional TZ environment variable to set timezone</li>
+      <li>Add environment variables section to docker-compose.yml template</li>
+      <li>Add optional TZ environment variable to set timezone</li>
     </ul>
   <li>August 28th 2022</li>
     <ul>
-        <li>Additional fix for #2 by adding a default config.yml for the server to use for Geyser (thanks vecnar, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/2">issue #2</a>)</li>
+      <li>Additional fix for #2 by adding a default config.yml for the server to use for Geyser (thanks vecnar, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/2">issue #2</a>)</li>
     </ul>
   <li>August 27th 2022</li>
     <ul>
-        <li>Fix broken Geyser-Spigot config.yml issue (thanks vecnar, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/2">issue #2</a>)</li>
+      <li>Fix broken Geyser-Spigot config.yml issue (thanks vecnar, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/2">issue #2</a>)</li>
     </ul>
   <li>August 22nd 2022</li>
     <ul>
-        <li>Add NoScreen environment variable -- disables screen which prevents needing an interactive terminal (but disables some logging)</li>
-        <li>Fix issue #1 (thanks Sam7, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/1">issue #1</a>)</li>
+      <li>Add NoScreen environment variable -- disables screen which prevents needing an interactive terminal (but disables some logging)</li>
+      <li>Fix issue #1 (thanks Sam7, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/1">issue #1</a>)</li>
     </ul>
   <li>August 18th 2022</li>
     <ul>
-        <li>Test rolling back OpenJDK version slightly to earlier version of OpenJDK 18 previous to 10th-11th gen Intel CPU bugs</li>
+      <li>Test rolling back OpenJDK version slightly to earlier version of OpenJDK 18 previous to 10th-11th gen Intel CPU bugs</li>
     </ul>
   <li>August 17th 2022</li>
     <ul>
-        <li>Add XX:-UseAESCTRIntrinsics to java launch line to prevent encryption issue on 10th Gen Intel processors</li>
+      <li>Add XX:-UseAESCTRIntrinsics to java launch line to prevent encryption issue on 10th Gen Intel processors</li>
     </ul>
   <li>August 10th 2022</li>
     <ul>
-        <li>Adjust query.port in server.properties to be the same as the main server port to keep the "ping port" working properly</li>
-        <li>Add enforce-secure-profile=false to default server.properties to prevent login errors</li>
-        <li>Add text editor inside the container (nano) for diagnostic/troubleshooting purposes</li>
+      <li>Adjust query.port in server.properties to be the same as the main server port to keep the "ping port" working properly</li>
+      <li>Add enforce-secure-profile=false to default server.properties to prevent login errors</li>
+      <li>Add text editor inside the container (nano) for diagnostic/troubleshooting purposes</li>
     </ul>
   <li>August 6th 2022</li>
     <ul>
-        <li>Initial release</li>
+      <li>Initial release</li>
     </ul>
 </ul>
