@@ -63,18 +63,37 @@ while [ -z "$DefaultRoute" ]; do
 done
 
 # Take ownership of server files and set correct permissions
-Permissions=$(sudo bash /scripts/fixpermissions.sh -a)
+if [ -z "$NoPermCheck" ]; then
+    Permissions=$(sudo bash /scripts/fixpermissions.sh -a)
+else
+    echo "Skipping permissions check due to NoPermCheck flag"
+fi
+
+# Daily scheduled restart
+if [ -z "$ScheduleRestart" ]; then
+    FutureRestart=$(shutdown -r "$ScheduleRestart")
+    echo "Scheduling daily restart: $FutureRestart"
+fi
 
 # Back up server
 if [ -d "world" ]; then
     if [ -n "$(which pigz)" ]; then
         echo "Backing up server (all cores) to cd minecraft/backups folder"
-        tar -I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' -pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
+        if [ -z "$NoBackup" ]; then
+            tar -I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' -pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
+        else
+            tar -I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' --exclude="./$NoBackup" -pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
+        fi
     else
         echo "Backing up server (single core, pigz not found) to cd minecraft/backups folder"
-        tar --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' -pzvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
+        if [ -z "$NoBackup" ]; then
+            tar --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' -pzvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
+        else
+            tar --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' --exclude="./$NoBackup" -pzvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
+        fi
     fi
 fi
+
 
 # Rotate backups -- keep most recent 10
 if [ -d /minecraft/backups ]; then

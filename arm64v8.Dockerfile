@@ -32,6 +32,15 @@ ENV Version="1.19.2"
 # Optional Timezone
 ENV TZ="America/Denver"
 
+# Optional folder to ignore during backup operations
+ENV NoBackup=""
+
+# Optional switch to skip permissions check
+ENV NoPermCheck=""
+
+# Optional switch to schedule a daily restart (use 24 hour time format like 3:30 for 3:30am)
+ENV ScheduleRestart=""
+
 # IPV4 Ports
 EXPOSE 25565/tcp
 EXPOSE 19132/tcp

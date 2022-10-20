@@ -24,6 +24,9 @@ services:
       TZ: "America/Denver" # timezone
       #MaxMemory: 2048 # Maximum memory usage for Java
       #Version: 1.19.2 # Use custom version
+      #NoBackup: "plugins" # Optional folder to skip during backups
+      #NoPermCheck: "Y" # Optional flag to skip permissions check
+      #ScheduleRestart: "3:30" # Optional restart -- specify time in 24 hour format
 volumes:
   minecraft:
     driver: local

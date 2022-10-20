@@ -32,15 +32,21 @@ First you must create a named Docker volume.  This can be done with:<br>
 Now you may launch the server and open the ports necessary with one of the following Docker launch commands:<br>
 <br>
 With default ports:
-<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 With custom ports (this example uses 12345 for the Java port and 54321 for the Bedrock port):
-<pre>docker run -it -v yourvolumename:/minecraft -p 12345:12345 -e Port=12345 -p 54321:54321/udp -p 54321:54321 -e BedrockPort=54321 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+<pre>docker run -it -v yourvolumename:/minecraft -p 12345:12345 -e Port=12345 -p 54321:54321/udp -p 54321:54321 -e BedrockPort=54321 --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 With a custom Minecraft version (add -e Version=1.X.X, must be present on Paper's API servers to work):
-<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e Version=1.17.1 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e Version=1.17.1 --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 With a maximum memory limit in megabytes (optional, prevents crashes on platforms with limited memory, -e MaxMemory=2048):
-<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e MaxMemory=2048 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e MaxMemory=2048 --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 Using a different timezone:
-<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+With a daily scheduled restart (specify time in 24 hour format):
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e ScheduleRestart="3:30" --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+Skipping backups on a certain folder:
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoBackup="plugins" --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+Skipping permissions check:
+<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoPermCheck="Y" --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
 <h2>Configuration / Accessing Server Files</h2>
 The server data is stored where Docker stores your volumes.  This is typically a folder on the host OS that is shared and mounted with the container.<br>
@@ -133,6 +139,12 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>October 20th 2022</li>
+    <ul>
+      <li>Added new environment variable "NoBackup" to skip a folder from backup activities</li>
+      <li>Added new environment variable "NoPermCheck" to skip permissions check during startup</li>
+      <li>Added new environment variable "ScheduleRestart" -- this schedules the container to shut down at a certain time which combined with the --restart switch gives daily reboot functionality</li>
+    </ul>
   <li>October 8th 2022</li>
     <ul>
       <li>Upgrade to OpenJDK 19</li>
