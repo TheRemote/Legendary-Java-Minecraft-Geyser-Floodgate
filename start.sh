@@ -79,21 +79,26 @@ fi
 if [ -d "world" ]; then
     if [ -n "$(which pigz)" ]; then
         echo "Backing up server (all cores) to cd minecraft/backups folder"
-        if [ -z "$NoBackup" ]; then
-            tar -I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' -pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
-        else
-            tar -I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' --exclude="./$NoBackup" -pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
-        fi
+        tarArgs=(-I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar')
+        IFS=','
+        read -ra ADDR <<< "$NoBackup"
+        for i in "${ADDR[@]}"; do
+            tarArgs+=(--exclude="./$i")
+        done
+        tarArgs+=(-pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*)
+        tar "${tarArgs[@]}"
     else
         echo "Backing up server (single core, pigz not found) to cd minecraft/backups folder"
-        if [ -z "$NoBackup" ]; then
-            tar --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' -pzvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
-        else
-            tar --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar' --exclude="./$NoBackup" -pzvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*
-        fi
+        tarArgs=(--exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./jre' --exclude='./paperclip.jar')
+        IFS=','
+        read -ra ADDR <<< "$NoBackup"
+        for i in "${ADDR[@]}"; do
+            tarArgs+=(--exclude="./$i")
+        done
+        tarArgs+=(-pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*)
+        tar "${tarArgs[@]}"
     fi
 fi
-
 
 # Rotate backups -- keep most recent 10
 if [ -d /minecraft/backups ]; then
