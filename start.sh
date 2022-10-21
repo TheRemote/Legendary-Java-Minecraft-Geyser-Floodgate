@@ -100,11 +100,11 @@ if [ -d "world" ]; then
     fi
 fi
 
-# Rotate backups -- keep most recent 10
+# Rotate backups
 if [ -d /minecraft/backups ]; then
     Rotate=$(
         pushd /minecraft/backups
-        ls -1tr | head -n -10 | xargs -d '\n' rm -f --
+        ls -1tr | head -n -$BackupCount | xargs -d '\n' rm -f --
         popd
     )
 fi

@@ -32,6 +32,9 @@ ENV TZ="America/Denver"
 # Optional folder to ignore during backup operations
 ENV NoBackup=""
 
+# Number of rolling backups to keep
+ENV BackupCount=10
+
 # Optional switch to skip permissions check
 ENV NoPermCheck=""
 

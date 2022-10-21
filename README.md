@@ -76,8 +76,11 @@ The Geyser configuration is located in plugins/Geyser-Spigot/config.yml<br>
 The Floodgate configuration is located in plugins/floodgate/config.yml<br>
 
 <h2>TZ (timezone) Environment Variable</h2>
-You can change the timezone from the default "America/Denver" to own timezone using this environment variable: <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+You can change the timezone from the default "America/Denver" to own timezone using this environment variable: <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e TZ="America/Denver" --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 A <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">list of Linux timezones is available here</a>
+
+<h2>BackupCount Environment Variable</h2>
+By default the server keeps 10 rolling backups that occur each time the container restarts.  You can override this using the BackupCount environment variable:<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e BackupCount=20 --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
 <h2>Plugins</h2>
 This is a "Paper" Minecraft server which has plugin compatibility with Paper / Spigot / Bukkit.<br>
@@ -141,6 +144,7 @@ This can also be done non-persistently with the following ethtool command: <pre>
 <ul>
   <li>October 21st 2022</li>
     <ul>
+      <li>Added new environment variable "BackupCount" to control the number of backups the container keeps</li>
       <li>NoBackup optional environment variable can now be multiple paths to files to skip backups on separated by a comma.  Example: plugins/test,plugins/test2</li>
     </ul>
   <li>October 20th 2022</li>
