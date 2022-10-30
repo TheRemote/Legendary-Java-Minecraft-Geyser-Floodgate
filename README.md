@@ -142,6 +142,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>October 30th 2022</li>
+    <ul>
+      <li>Fix bug with new ScheduleRestart environment variable</li>
+    </ul>
   <li>October 21st 2022</li>
     <ul>
       <li>Added new environment variable "BackupCount" to control the number of backups the container keeps</li>
