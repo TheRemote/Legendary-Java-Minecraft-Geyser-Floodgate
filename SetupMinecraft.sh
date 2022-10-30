@@ -31,7 +31,7 @@ Install_Java() {
     rm -f /jre19.tar.gz
     mv /jdk-* /jre
   elif [[ "$CPUArch" == *"ppc64le"* ]]; then
-    curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19%2B36/OpenJDK19U-jre_s390x_linux_hotspot_19_36.tar.gz -o /jre19.tar.gz -L
+    curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19%2B36/OpenJDK19U-jre_ppc64le_linux_hotspot_19_36.tar.gz -o /jre19.tar.gz -L
     tar -xf /jre19.tar.gz
     rm -f /jre19.tar.gz
     mv /jdk-* /jre
