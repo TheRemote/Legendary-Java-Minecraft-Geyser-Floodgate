@@ -144,6 +144,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 <ul>
   <li>October 30th 2022</li>
     <ul>
+      <li>Add RISC architecture support</li>
+      <li>Switch from ubuntu:latest to ubuntu:rolling</li>
+      <li>Switch from using Adoptium to using ubuntu:rolling OpenJDK</li>
+      <li>Removed SetupMinecraft.sh</li>
       <li>Fix bug with new ScheduleRestart environment variable</li>
     </ul>
   <li>October 21st 2022</li>

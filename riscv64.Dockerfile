@@ -2,17 +2,17 @@
 # Author: James A. Chambers - https://jamesachambers.com/minecraft-java-bedrock-server-together-geyser-floodgate/
 # GitHub Repository: https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate
 
-# Use Ubuntu rolling version for builder
+# Use latest Ubuntu version for builder
 FROM ubuntu:rolling AS builder
 
 # Update apt
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install qemu-user-static binfmt-support apt-utils -yqq && rm -rf /var/cache/apt/*
 
-# Use Ubuntu rolling version
-FROM --platform=linux/s390x ubuntu:rolling
+# Use current Ubuntu LTS version
+FROM --platform=linux/riscv64 ubuntu:rolling
 
 # Add QEMU
-COPY --from=builder /usr/bin/qemu-s390x-static /usr/bin/
+COPY --from=builder /usr/bin/qemu-riscv64-static /usr/bin/
 
 # Fetch dependencies
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-19-jre-headless systemd-sysv tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*

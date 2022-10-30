@@ -3,19 +3,19 @@
 # GitHub Repository: https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate
 
 # Use latest Ubuntu version for builder
-FROM ubuntu:latest AS builder
+FROM ubuntu:rolling AS builder
 
 # Update apt
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install qemu-user-static binfmt-support apt-utils -yqq && rm -rf /var/cache/apt/*
 
-# Use current Ubuntu LTS version
-FROM --platform=linux/ppc64le ubuntu:latest
+# Use Ubuntu rolling version
+FROM --platform=linux/ppc64le ubuntu:rolling
 
 # Add QEMU
 COPY --from=builder /usr/bin/qemu-ppc64le-static /usr/bin/
 
 # Fetch dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install systemd-sysv tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-19-jre-headless systemd-sysv tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
 
 # Set port environment variable
 ENV Port=25565
@@ -55,9 +55,6 @@ COPY *.sh /scripts/
 COPY *.yml /scripts/
 COPY server.properties /scripts/
 RUN chmod -R +x /scripts/*.sh
-
-# Run SetupMinecraft.sh
-RUN /scripts/SetupMinecraft.sh
 
 # Set entrypoint to start.sh script
 ENTRYPOINT ["/bin/bash", "/scripts/start.sh"]
