@@ -142,7 +142,7 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
-  <li>November 7thth 2022</li>
+  <li>November 7th 2022</li>
     <ul>
       <li>Fail immediately if ran without an interactive terminal (as the Minecraft server won't work without one)</li>
     </ul>
