@@ -14,7 +14,6 @@ if [ ! -d '/minecraft' ]; then
 fi
 
 Terminal=$(readlink /proc/self/fd/0)
-echo "$Terminal"
 if [ -z "$Terminal" ] || [ "$Terminal" != "/dev/pts/0" ]; then
     echo "An interactive terminal is required (you don't have to attach).  Please run with docker -it or docker -itd (detached interactive terminal)."
     sleep 10
