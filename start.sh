@@ -71,7 +71,9 @@ done
 
 # Take ownership of server files and set correct permissions
 if [ -z "$NoPermCheck" ]; then
-    Permissions=$(sudo bash /scripts/fixpermissions.sh -a)
+    echo "Taking ownership of all server files/folders in /minecraft..."
+    sudo -n chown -R $(whoami) /minecraft >/dev/null 2>&1
+    echo "Complete"
 else
     echo "Skipping permissions check due to NoPermCheck flag"
 fi

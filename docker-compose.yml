@@ -22,7 +22,7 @@ services:
       Port: "25565"
       BedrockPort: "19132"
       TZ: "America/Denver" # Timezone
-      BackupCount: 10 # Number of rolling backups to keep
+      #BackupCount: 10 # Number of rolling backups to keep
       #MaxMemory: 2048 # Maximum memory usage for Java
       #Version: 1.19.2 # Use custom version
       #NoBackup: "plugins" # Optional folder to skip during backups
