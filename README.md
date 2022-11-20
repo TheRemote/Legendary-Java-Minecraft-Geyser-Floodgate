@@ -148,7 +148,7 @@ This can also be done non-persistently with the following ethtool command: <pre>
   <li>November 19th 2022</li>
     <ul>
       <li>Add "QuietCurl" environment variable which will suppress the progress meter on curl keeping the logs much tidier (thanks willman42, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/pull/6">PR #6</a></li>
-      <li>Remove fixpermissions.sh and add 3 lines into main start.sh file</br>
+      <li>Remove fixpermissions.sh and add 3 lines into main start.sh file</li>
     </ul>
   <li>November 7th 2022</li>
     <ul>
