@@ -19,10 +19,10 @@ services:
     entrypoint: [ "/bin/bash", "/scripts/start.sh" ]
     # Environment variables
     environment:
-      Port: "25565"
-      BedrockPort: "19132"
+      #Port: "25565" # Uncomment to use port other than default Java port 25565
+      #BedrockPort: "19132" # Uncomment to use port other than default Bedrock port 19132
       TZ: "America/Denver" # Timezone
-      BackupCount: 10 # Number of rolling backups to keep
+      #BackupCount: 10 # Number of rolling backups to keep. Uncomment to change default of 10.
       #MaxMemory: 2048 # Maximum memory usage for Java
       #Version: 1.19.2 # Use custom version
       #NoBackup: "plugins" # Optional folder to skip during backups
