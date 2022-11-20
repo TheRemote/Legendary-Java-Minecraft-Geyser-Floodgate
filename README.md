@@ -82,6 +82,9 @@ A <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">list of
 <h2>BackupCount Environment Variable</h2>
 By default the server keeps 10 rolling backups that occur each time the container restarts.  You can override this using the BackupCount environment variable:<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e BackupCount=20 --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 
+<h2>QuietCurl Environment Variable</h2>
+You can use the QuietCurl environment variable to suppress curl's download output.  This will keep your logs tidier but may make it harder to diagnose if something is going wrong.  If things are working well it's safe to enable this option and turn it back off so you can see the output if you need to:<pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e QuietCurl=Y --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+
 <h2>Plugins</h2>
 This is a "Paper" Minecraft server which has plugin compatibility with Paper / Spigot / Bukkit.<br>
 <br>
@@ -142,6 +145,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>November 19th 2022</li>
+    <ul>
+      <li>Add "QuietCurl" environment variable which will suppress the progress meter on curl keeping the logs much tidier (thanks willman42, PR #6)</li>
+    </ul>
   <li>November 7th 2022</li>
     <ul>
       <li>Fail immediately if ran without an interactive terminal (as the Minecraft server won't work without one)</li>
