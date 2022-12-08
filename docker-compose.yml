@@ -24,7 +24,7 @@ services:
       TZ: "America/Denver" # Timezone
       #BackupCount: 10 # Number of rolling backups to keep
       #MaxMemory: 2048 # Maximum memory usage for Java
-      #Version: 1.19.2 # Use custom version
+      #Version: 1.19.3 # Use custom version
       #NoBackup: "plugins" # Optional folder to skip during backups
       #NoPermCheck: "Y" # Optional flag to skip permissions check
       #QuietCurl: "Y" # Optional flag to reduce curl log output by suppressing progress meter

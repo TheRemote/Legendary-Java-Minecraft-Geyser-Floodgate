@@ -145,6 +145,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>December 7th 2022</li>
+    <ul>
+      <li>Update to 1.19.3 (thanks WarpOverload, issue #9)</li>
+    </ul>
   <li>November 19th 2022</li>
     <ul>
       <li>Add "QuietCurl" environment variable which will suppress the progress meter on curl keeping the logs much tidier (thanks willman42, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/pull/6">PR #6</a></li>
