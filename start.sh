@@ -148,6 +148,22 @@ else
     curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -s google.com -o /dev/null
 fi
 
+if [ -z "$ViaVersion" ]; then
+    # This curls for all existing final ViaVersions versions that look like xx.xx or xx.xx.xx (removing any SNAPSHOT or PRE-releases)
+    # sorts them via sorts version sorting (sort -V) and retrieves the last line (tail -1) which holds the latest version
+    ViaVersion=$(curl -s https://repo.viaversion.com/api/everything/com/viaversion/viaversion | jq -r '.files | map(select( .name | test("[^\\d+\\.]") | not).name)[]' | sort -V | tail -1)
+    echo "ViaVersion version found: $ViaVersion"
+fi
+
+# Test whether the desired paper $Version is set or not
+# If not set we will try to find the latest version automatically
+if [ -z "$Version" ]; then
+    # This curls for all existing final paper versions that look like xx.xx or xx.xx.xx (removing any SNAPSHOT or PRE-releases)
+    # sorts them via sorts version sorting (sort -V) and retrieves the last line (tail -1) which holds the latest version
+    Version=$(curl -s https://papermc.io/api/v2/projects/paper | jq '.versions|map(select( values | test("[^\\d+\\.]") | not))[]' | sort -V | tail -1)
+    echo "Paper version found: $Version"
+fi
+
 if [ "$?" != 0 ]; then
     echo "Unable to connect to update website (internet connection may be down).  Skipping update ..."
 else
@@ -200,6 +216,24 @@ else
         fi
     else
         echo "Unable to check for updates to Geyser!"
+    fi
+
+    # Update ViaVersion if new version is available
+    ViaVersionMD5=$(curl --no-progress-meter -k -L -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" "https://repo.viaversion.com/everything/com/viaversion/viaversion/$ViaVersion/viaversion-$ViaVersion.jar.md5")
+    if [ -n "$ViaVersionMD5" ]; then
+        LocalMD5=$(md5sum plugins/ViaVersion.jar | cut -d' ' -f1)
+        if [ -e /minecraft/plugins/ViaVersion.jar ] && [ "$LocalMD5" = "$ViaVersionMD5" ]; then
+            echo "ViaVersion is up to date"
+        else
+            echo "Updating ViaVersion..."
+            if [ -z "$QuietCurl" ]; then
+                curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/ViaVersion.jar "https://repo.viaversion.com/everything/com/viaversion/viaversion/$ViaVersion/viaversion-$ViaVersion.jar"
+            else
+                curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/ViaVersion.jar "https://repo.viaversion.com/everything/com/viaversion/viaversion/$ViaVersion/viaversion-$ViaVersion.jar"
+            fi
+        fi
+    else
+        echo "Unable to check for updates to ViaVersion!"
     fi
 fi
 
