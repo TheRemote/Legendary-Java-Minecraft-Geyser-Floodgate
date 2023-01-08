@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft
+  namespace: minecraft
+spec:
+  type: LoadBalancer
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv4
+    - IPv6
+  ports:
+    - name: java
+      port: 25565
+      protocol: TCP
+      targetPort: java
+    - name: bedrock-v4-udp
+      port: 19132
+      protocol: UDP
+      targetPort: bedrock-v4
+    - name: bedrock-v6-udp
+      port: 19133
+      protocol: UDP
+      targetPort: bedrock-v6
+    - name: bedrock-v4-tcp
+      port: 19132
+      protocol: TCP
+      targetPort: bedrock-v4
+    - name: bedrock-v6-tcp
+      port: 19133
+      protocol: TCP
+      targetPort: bedrock-v6
+  selector:
+    app: minecraft

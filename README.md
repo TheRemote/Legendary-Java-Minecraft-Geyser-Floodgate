@@ -23,9 +23,10 @@ The <a href="https://github.com/TheRemote/Legendary-Bedrock-Container" target="_
   <li>Automatic backups to minecraft/backups when server restarts</li>
   <li>Updates automatically to the latest version when server is started</li>
   <li>Runs on all Docker platforms including Raspberry Pi</li>
+  <li>Runs on all Kubernetes platforms including Raspberry Pi</li>
 </ul>
 
-<h2>Usage</h2>
+<h2>Docker Usage</h2>
 First you must create a named Docker volume.  This can be done with:<br>
 <pre>docker volume create yourvolumename</pre>
 
@@ -47,6 +48,25 @@ Skipping backups on certain folders (comma separated):
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoBackup="plugins/ftp,plugins/test2" --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
 Skipping permissions check:
 <pre>docker run -it -v yourvolumename:/minecraft -p 25565:25565 -p 19132:19132/udp -p 19132:19132 -e NoPermCheck="Y" --restart unless-stopped 05jchambers/legendary-minecraft-geyser-floodgate:latest</pre>
+
+<h2>Kubernetes Usage</h2>
+First you must create a suitable PVC using your preferred StorageClass.<br>
+To run within Kubernetes, you must pass the enviroment variable `k8s="True"`
+alongside any others you require:<br>
+<pre>
+        env:
+        - name: MaxMemory
+          value: '1024'
+        - name: TZ
+          value: Europe/London
+        - name: k8s
+          value: "True"
+</pre>
+<bold>Be aware that terminal features will not be available when running in kubernetes</bold>
+<br>
+The pod can be exposed using a LoadBalancer or TCP/UDP Ingress service.  See example manifests in the /kubernetes folder of the repo.  The examples are based on Longhorn
+storage backend and a LoadBalancer service - these will need altering to be suitable
+for your environment.<br>
 
 <h2>Configuration / Accessing Server Files</h2>
 The server data is stored where Docker stores your volumes.  This is typically a folder on the host OS that is shared and mounted with the container.<br>
