@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: minecraft
+  name: minecraft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      containers:
+      - name: minecraft
+        image: 05jchambers/legendary-minecraft-geyser-floodgate:latest
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: minecraft-data
+          mountPath: /minecraft
+        env:
+        - name: MaxMemory
+          value: '1024'
+        - name: k8s
+          value: "True"
+        resources:
+          limits:
+            cpu: 1500m
+            memory: 1024M
+            ephemeral-storage: 50Mi
+          requests:
+            cpu: 750m
+            memory: 750M
+            ephemeral-storage: 2Mi
+        ports:
+        - containerPort: 25565
+          name: java
+        - containerPort: 19132
+          name: bedrock-v4
+        - containerPort: 19133
+          name: bedrock-v6
+      volumes:
+      - name: minecraft-data
+        persistentVolumeClaim:
+          claimName: minecraft-pvc

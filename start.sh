@@ -13,11 +13,13 @@ if [ ! -d '/minecraft' ]; then
     exit 1
 fi
 
-Terminal=$(readlink /proc/self/fd/0)
-if [ -z "$Terminal" ] || [ "$Terminal" != "/dev/pts/0" ]; then
-    echo "An interactive terminal is required (you don't have to attach).  Please run with docker -it or docker -itd (detached interactive terminal)."
-    sleep 10
-    exit 1
+if [ -z "$k8s" ]; then
+    Terminal=$(readlink /proc/self/fd/0)
+    if [ -z "$Terminal" ] || [ "$Terminal" != "/dev/pts/0" ]; then
+        echo "An interactive terminal is required (you don't have to attach).  Please run with docker -it or docker -itd (detached interactive terminal)."
+        sleep 10
+        exit 1
+    fi
 fi
 
 # Randomizer for user agent
