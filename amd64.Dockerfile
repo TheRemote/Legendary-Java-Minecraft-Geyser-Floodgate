@@ -38,9 +38,6 @@ ENV BackupCount=10
 # Optional switch to skip permissions check
 ENV NoPermCheck=""
 
-# Optional switch to schedule a daily restart (use 24 hour time format like 3:30 for 3:30am)
-ENV ScheduleRestart=""
-
 # Optional switch to tell curl to suppress the progress meter which generates much less noise in the logs
 ENV QuietCurl=""
 

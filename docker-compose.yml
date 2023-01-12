@@ -28,7 +28,6 @@ services:
       #NoBackup: "plugins" # Optional folder to skip during backups
       #NoPermCheck: "Y" # Optional flag to skip permissions check
       #QuietCurl: "Y" # Optional flag to reduce curl log output by suppressing progress meter
-      #ScheduleRestart: "3:30" # Optional restart -- specify time in 24 hour format
 volumes:
   minecraft:
     driver: local

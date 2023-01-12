@@ -80,14 +80,6 @@ else
     echo "Skipping permissions check due to NoPermCheck flag"
 fi
 
-# Daily scheduled restart
-if [ -z "$ScheduleRestart" ]; then
-    echo "No daily restart scheduled"
-else
-    FutureRestart=$(shutdown -r "$ScheduleRestart")
-    echo "Scheduling daily restart: $FutureRestart"
-fi
-
 # Back up server
 if [ -d "world" ]; then
     if [ -n "$(which pigz)" ]; then
