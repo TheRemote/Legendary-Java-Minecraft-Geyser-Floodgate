@@ -163,6 +163,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>January 25th 2023</li>
+    <ul>
+      <li>Removed check for terminal and will let the Minecraft server throw an error if environment is not appropriate</li>
+    </ul>
   <li>January 14th 2023</li>
     <ul>
       <li>Change google.com connectivity change to papermc.io as Google is blocked in some countries causing the connectivity check to fail when a connection to papermc.io would have succeeded (thanks Misakaou, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/14">Issue #14</a></li>
