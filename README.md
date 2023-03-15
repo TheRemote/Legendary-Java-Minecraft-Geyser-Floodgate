@@ -167,6 +167,7 @@ This can also be done non-persistently with the following ethtool command: <pre>
   <li>March 15th 2023</li>
     <ul>
       <li>Add ViaVersion plugin to allow players on newer clients to connect to the server (very helpful when waiting for new updates to be released)</li>
+      <li>Fix Geyser and Floodgate update checks</li>
     </ul>
   <li>January 25th 2023</li>
     <ul>
