@@ -164,6 +164,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>March 16th 2023</li>
+    <ul>
+      <li>Update to Paper 1.19.4</li>
+    </ul>
   <li>March 15th 2023</li>
     <ul>
       <li>Add ViaVersion plugin to allow players on newer clients to connect to the server (very helpful when waiting for new updates to be released)</li>
