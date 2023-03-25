@@ -33,6 +33,9 @@ cd /minecraft
 if [ ! -d "/minecraft/downloads" ]; then
     mkdir -p /minecraft/downloads
 fi
+if [ ! -d "/minecraft/config" ]; then
+    mkdir -p /minecraft/config
+fi
 if [ ! -d "/minecraft/backups" ]; then
     mkdir -p /minecraft/backups
 fi
