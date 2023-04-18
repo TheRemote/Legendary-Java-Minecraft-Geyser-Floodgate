@@ -164,6 +164,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>April 18th 2023</li>
+    <ul>
+      <li>Add NoViaVersion environment variable to disable using ViaVersion in case of incompatible plugins</li>
+    </ul>
   <li>March 25th 2023</li>
     <ul>
       <li>Migrate paper.yml to paper-global.yml (thanks karl007, <a href="https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate/issues/21">Issue #21</a>)</li>

@@ -44,6 +44,9 @@ ENV NoPermCheck=""
 # Optional switch to tell curl to suppress the progress meter which generates much less noise in the logs
 ENV QuietCurl=""
 
+# Optional switch to disable ViaVersion
+ENV NoViaVersion=""
+
 # IPV4 Ports
 EXPOSE 25565/tcp
 EXPOSE 19132/tcp

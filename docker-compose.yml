@@ -27,6 +27,7 @@ services:
       #Version: 1.19.3 # Use custom version
       #NoBackup: "plugins" # Optional folder to skip during backups
       #NoPermCheck: "Y" # Optional flag to skip permissions check
+      #NoViaVersion: "Y" # Optional flag to disable ViaVersion plugin
       #QuietCurl: "Y" # Optional flag to reduce curl log output by suppressing progress meter
 volumes:
   minecraft:
