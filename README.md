@@ -164,6 +164,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>June 9th 2023</li>
+    <ul>
+      <li>Update default version to 1.20 (remember, you never need to update for Minecraft version updates, just use -e Version=1.20)</li>
+    </ul>
   <li>April 18th 2023</li>
     <ul>
       <li>Add NoViaVersion environment variable to disable using ViaVersion in case of incompatible plugins</li>
