@@ -27,7 +27,7 @@ ENV BedrockPort=19132
 ENV MaxMemory=
 
 # Optional Paper Minecraft Version override
-ENV Version="1.20"
+ENV Version="1.20.1"
 
 # Optional Timezone
 ENV TZ="America/Denver"
