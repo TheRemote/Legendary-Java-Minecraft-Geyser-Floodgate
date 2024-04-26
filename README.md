@@ -164,6 +164,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>April 26th 2024</li>
+    <ul>
+      <li>Updated default version to 1.20.5 (remember, you never need to wait for updates to change Minecraft versions, just use -e Version=1.20.5)</li>
+    </ul>
   <li>December 13th 2023</li>
     <ul>
       <li>Updated default version to 1.20.4 (remember, you never need to wait for updates to change Minecraft versions, just use -e Version=1.20.4)</li>
