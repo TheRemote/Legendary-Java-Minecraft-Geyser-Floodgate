@@ -15,7 +15,7 @@ FROM --platform=linux/arm/v7 ubuntu:rolling
 COPY --from=builder /usr/bin/qemu-arm-static /usr/bin/
 
 # Fetch dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-19-jre-headless systemd-sysv tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jre-headless systemd-sysv tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
 
 # Set port environment variable
 ENV Port=25565
