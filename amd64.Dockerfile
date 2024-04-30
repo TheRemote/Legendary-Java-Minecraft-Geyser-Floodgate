@@ -12,7 +12,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install qemu-user-s
 FROM --platform=linux/amd64 ubuntu:rolling
 
 # Fetch dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-19-jre-headless systemd-sysv tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jre-headless systemd-sysv tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
 
 # Set port environment variable
 ENV Port=25565
@@ -24,7 +24,7 @@ ENV BedrockPort=19132
 ENV MaxMemory=
 
 # Optional Paper Minecraft Version override
-ENV Version="1.20.5"
+ENV Version="1.20.6"
 
 # Optional Timezone
 ENV TZ="America/Denver"
