@@ -167,6 +167,7 @@ This can also be done non-persistently with the following ethtool command: <pre>
   <li>May 19th 2024</li>
     <ul>
       <li>Updated OpenJDK version to 21</li>
+      <li>Updated default version to 1.20.6</li>
     </ul>
   <li>April 27th 2024</li>
     <ul>
