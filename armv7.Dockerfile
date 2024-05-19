@@ -3,13 +3,13 @@
 # GitHub Repository: https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate
 
 # Use Ubuntu rolling version for builder
-FROM ubuntu:rolling AS builder
+FROM ubuntu:mantic AS builder
 
 # Update apt
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install qemu-user-static binfmt-support apt-utils -yqq && rm -rf /var/cache/apt/*
 
 # Use Ubuntu rolling version
-FROM --platform=linux/arm/v7 ubuntu:rolling
+FROM --platform=linux/arm/v7 ubuntu:mantic
 
 # Add QEMU
 COPY --from=builder /usr/bin/qemu-arm-static /usr/bin/
