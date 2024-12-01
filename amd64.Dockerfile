@@ -56,5 +56,12 @@ COPY *.yml /scripts/
 COPY server.properties /scripts/
 RUN chmod -R +x /scripts/*.sh
 
+# Create Minecraft user
+RUN useradd -m -r -s /bin/bash minecraft
+RUN chown -R minecraft:minecraft /minecraft
+
+# Switch to user minecraft to run server
+USER minecraft
+
 # Set entrypoint to start.sh script
 ENTRYPOINT ["/bin/bash", "/scripts/start.sh"]
