@@ -22,7 +22,3 @@ manifests:
     platform:
       architecture: s390x
       os: linux
-  - image: 05jchambers/legendary-minecraft-geyser-floodgate:riscv64
-    platform:
-      architecture: riscv64
-      os: linux
