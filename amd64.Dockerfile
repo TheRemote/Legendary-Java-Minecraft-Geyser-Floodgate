@@ -6,7 +6,28 @@
 FROM --platform=linux/amd64 ubuntu:rolling
 
 # Fetch dependencies
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jre-headless tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano jq vim -yqq && rm -rf /var/cache/apt/*
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
+      apt-utils \
+      binfmt-support \
+      ca-certificates \
+      curl \
+      gawk \
+      findutils \
+      jq \
+      libcurl4 \
+      libcurl4-openssl-dev \
+      libc6 \
+      libcrypt1 \
+      net-tools \
+      nano \
+      openjdk-21-jre-headless \
+      openssl \
+      pigz \
+      tzdata \
+      unzip \
+      vim && \
+    rm -rf /var/cache/apt/*
 
 # Set port environment variable
 ENV Port=25565
@@ -15,7 +36,7 @@ ENV Port=25565
 ENV BedrockPort=19132
 
 # Optional maximum memory Minecraft is allowed to use
-ENV MaxMemory=
+ENV MaxMemory=""
 
 # Optional Paper Minecraft Version override
 ENV Version="1.21.3"
