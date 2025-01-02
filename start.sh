@@ -3,37 +3,39 @@
 # Author: James A. Chambers - https://jamesachambers.com/minecraft-java-bedrock-server-together-geyser-floodgate/
 # GitHub Repository: https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate
 
-# If running as root, create 'minecraft' user and restart script as 'minecraft' user
+CurlArgs=(-H "Accept-Encoding: identity"
+          -H "Accept-Language: en"
+          -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36"
+          -L
+)
+
+# If running as root, fix ownership of all files and restart script as 'minecraft' user
 if [ "$(id -u)" = '0' ]; then
-    echo "Script is running as root, switching to 'minecraft' user..."
+    echo "Script is running as '$(whoami)', switching to 'minecraft' user ..."
 
-    if ! id minecraft >/dev/null 2>&1; then
-        echo "Creating 'minecraft' user..."
-        useradd -m -r -s /bin/bash minecraft
-    fi
-
+    printf "\tChanging ownership of all files in /minecraft to minecraft:minecraft"
     chown -R minecraft:minecraft /minecraft
 
-    exec su minecraft -c "$0 $@"
+    printf "\tRestarting script as 'minecraft' user\n"
+    exec su minecraft -c "$0" "$@"
 fi
 
 echo "Paper Minecraft Java Server Docker + Geyser/Floodgate script by James A. Chambers"
 echo "Latest version always at https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate"
 echo "Don't forget to set up port forwarding on your router!  The default port is 25565 and the Bedrock port is 19132"
 
-if [ ! -d '/minecraft' ]; then
+if ! df -h | grep -q /minecraft; then
     echo "ERROR:  A named volume was not specified for the minecraft server data.  Please create one with: docker volume create yourvolumename"
     echo "Please pass the new volume to docker like this:  docker run -it -v yourvolumename:/minecraft"
     exit 1
+else
+    echo "Volume mount found for /minecraft"
 fi
-
-# Randomizer for user agent
-RandNum=$(echo $((1 + $RANDOM % 5000)))
 
 if [ -z "$Port" ]; then
     Port="25565"
 fi
-echo "Port used: $Port"
+echo "Java port used: $Port"
 
 if [ -z "$BedrockPort" ]; then
     Port="19132"
@@ -41,7 +43,7 @@ fi
 echo "Bedrock port used: $BedrockPort"
 
 # Change directory to server directory
-cd /minecraft
+cd /minecraft || exit
 
 # Create backups/downloads folder if it doesn't exist
 if [ ! -d "/minecraft/downloads" ]; then
@@ -79,48 +81,56 @@ while [ -z "$DefaultRoute" ]; do
     fi
 done
 
-# Take ownership of server files and set correct permissions
+# Check ownership of server files
 if [ -z "$NoPermCheck" ]; then
-    echo "Taking ownership of all server files/folders in /minecraft..."
-    sudo -n chown -R $(whoami) /minecraft >/dev/null 2>&1
-    echo "Complete"
+    echo "Checking ownership of all server files/folders in /minecraft for user:group - '$(whoami):$(whoami)'"
+    chown -R minecraft:minecraft /minecraft >/dev/null
+    printf "\tOwnership check complete.  Any errors above could indicate an issue."
 else
-    echo "Skipping permissions check due to NoPermCheck flag"
+    echo "Skipping ownership check due to NoPermCheck flag"
 fi
 
 # Back up server
 if [ -d "world" ]; then
+    echo "Running backup ..."
+    if [ -z "$NoBackup" ]; then
+        NoBackup=""
+    else
+        printf '\tExcluding the following from backups: %s' "${NoBackup}"
+    fi
     if [ -n "$(which pigz)" ]; then
-        echo "Backing up server (all cores) to cd minecraft/backups folder"
+        printf "\tBacking up server (all cores) to /minecraft/backups folder ..."
         tarArgs=(-I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./paperclip.jar')
         IFS=','
         read -ra ADDR <<< "$NoBackup"
         for i in "${ADDR[@]}"; do
             tarArgs+=(--exclude="./$i")
         done
-        tarArgs+=(-pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*)
+        tarArgs+=(--totals --checkpoint=10000 --checkpoint-action=echo="     #%u: %{r,w}T" -pcf backups/"$(date +%Y.%m.%d.%H.%M.%S)".tar.gz ./*)
         tar "${tarArgs[@]}"
     else
-        echo "Backing up server (single core, pigz not found) to cd minecraft/backups folder"
+        printf "\tBacking up server (single core, pigz not found) to /minecraft/backups folder ..."
         tarArgs=(--exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./paperclip.jar')
         IFS=','
         read -ra ADDR <<< "$NoBackup"
         for i in "${ADDR[@]}"; do
             tarArgs+=(--exclude="./$i")
         done
-        tarArgs+=(-pvcf backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz ./*)
+        tarArgs+=(--totals --checkpoint=10000 --checkpoint-action=echo="     #%u: %{r,w}T" -pcf backups/"$(date +%Y.%m.%d.%H.%M.%S)".tar.gz ./*)
         tar "${tarArgs[@]}"
     fi
 fi
 
 # Rotate backups
-if [ -d /minecraft/backups ]; then
-    Rotate=$(
-        pushd /minecraft/backups
-        ls -1tr | head -n -$BackupCount | xargs -d '\n' rm -f --
-        popd
+if [ -d /minecraft/backups ] && [ -z "$BackupCount" ]; then
+    (
+        pushd /minecraft/backups || exit
+        find . -type f -printf "%T@ %p\n" | sort -n | head -n -"$BackupCount" | cut -d' ' -f2- | xargs -d '\n' rm -f --
+        popd || exit
     )
 fi
+# Ensure we are back in the server directory
+cd /minecraft || exit
 
 # Copy config files if this is a brand new server
 if [ ! -e "/minecraft/bukkit.yml" ]; then
@@ -139,82 +149,75 @@ if [ ! -e "/minecraft/plugins/Geyser-Spigot/config.yml" ]; then
     cp /scripts/config.yml /minecraft/plugins/Geyser-Spigot/config.yml
 fi
 
-# Test internet connectivity first
 # Update paperclip.jar
 echo "Updating to most recent paperclip version ..."
 
-# Test internet connectivity first
-if [ -z "$QuietCurl" ]; then
-    curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -s https://papermc.io -o /dev/null
+# Test update website connectivity first
+if ! curl "${CurlArgs[@]}" \
+          -s \
+          https://api.papermc.io \
+          -o /dev/null; then
+    printf "\tERROR: Unable to connect to update website (internet connection may be down).  Skipping server and plugin updates."
 else
-    curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -s https://papermc.io -o /dev/null
-fi
+    # Get latest build number
+    BuildJSON=$(curl --no-progress-meter \
+        "${CurlArgs[@]}" \
+        https://api.papermc.io/v2/projects/paper/versions/"${Version:?}"/builds
+    )
+    Build=$(echo "$BuildJSON" | jq '.builds | if map(select(.channel == "default")) | length > 0 then map(select(.channel == "default") | .build) | . else map(select(.channel == "experimental") | .build) | . end | .[-1]')
+    Build=$((Build + 0))
 
-if [ "$?" != 0 ]; then
-    echo "Unable to connect to update website (internet connection may be down).  Skipping update ..."
-else
-    # Get latest build
-    BuildJSON=$(curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" https://api.papermc.io/v2/projects/paper/versions/$Version/builds)
-    Build=$(echo "$BuildJSON" | jq '.builds | map(select(.channel == "default") | .build) | .[-1]')
-    Build=$(($Build + 0))
+    # Download latest build for the targeted version
     if [[ $Build != 0 ]]; then
-        echo "Latest paperclip build found: $Build (stable)"
-        if [ -z "$QuietCurl" ]; then
-            curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/paperclip.jar "https://api.papermc.io/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
-        else
-            curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/paperclip.jar "https://api.papermc.io/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
-        fi
+        printf "\tFound latest paperclip build %s for version %s" "$Build" "$Version"
+        curl ${QuietCurl:+"--no-progress-meter"} \
+             "${CurlArgs[@]}" \
+             -o /minecraft/paperclip.jar \
+             "https://api.papermc.io/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
     else
-        echo "Unable to retrieve latest Paper build (got result of $Build).  Retrying the experimental channel for version $Version"
-
-        # Try getting the latest experimental build if no stable build was found
-        BuildJSON=$(curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" https://api.papermc.io/v2/projects/paper/versions/$Version/builds)
-        Build=$(echo "$BuildJSON" | jq '.builds | map(select(.channel == "experimental") | .build) | .[-1]')
-        Build=$(($Build + 0))
-        if [[ $Build != 0 ]]; then
-            echo "Latest paperclip build found: $Build (experimental)"
-            if [ -z "$QuietCurl" ]; then
-                curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/paperclip.jar "https://api.papermc.io/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
-            else
-                curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/paperclip.jar "https://api.papermc.io/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
-            fi
-        else
-            echo "Unable to retrieve latest Paper build (got result of $Build)."
-        fi
+        printf "\tUnable to retrieve latest Paper build (got result of: %s)" "$Build"
     fi
 
     # Update Floodgate
-    echo "Updating Floodgate..."
-    if [ -z "$QuietCurl" ]; then
-        curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/Floodgate-Spigot.jar "https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot"
-    else
-        curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/Floodgate-Spigot.jar "https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot"
-    fi
+    echo "Updating Floodgate ..."
+    curl ${QuietCurl:+"--no-progress-meter"} \
+         "${CurlArgs[@]}" \
+         -o /minecraft/plugins/Floodgate-Spigot.jar \
+         "https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot"
 
     # Update Geyser
-    echo "Updating Geyser..."
-    if [ -z "$QuietCurl" ]; then
-        curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/Geyser-Spigot.jar "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot"
-    else
-        curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/Geyser-Spigot.jar "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot"
-    fi
+    echo "Updating Geyser ..."
+    curl ${QuietCurl:+"--no-progress-meter"} \
+         "${CurlArgs[@]}" \
+         -o /minecraft/plugins/Geyser-Spigot.jar \
+         "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot"
 
     if [ -z "$NoViaVersion" ]; then
         # Update ViaVersion if new version is available
-        ViaVersionVersion=$(curl --no-progress-meter -k -L -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/ | grep -P '(?<=href=")ViaVersion[^"]+' -o --max-count=1 | head -n1)
-        if [ -n "$ViaVersionVersion" ]; then
-            ViaVersionMD5=$(curl --no-progress-meter -k -L -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" "https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/$ViaVersionVersion/*fingerprint*/" | grep breadcrumbs | cut -d'_' -f24- | cut -d'<' -f2 | cut -d'>' -f2)
-            if [ -n "$ViaVersionMD5" ]; then
-                LocalMD5=$(md5sum plugins/ViaVersion.jar | cut -d' ' -f1)
-                if [ -e /minecraft/plugins/ViaVersion.jar ] && [ "$LocalMD5" = "$ViaVersionMD5" ]; then
+        ViaVersionLatestVersion=$(curl --no-progress-meter \
+            "${CurlArgs[@]}" \
+            -k \
+            https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/ \
+            | grep -P '(?<=href=")ViaVersion[^"]+' -o --max-count=1 | head -n1
+        )
+        if [ -n "$ViaVersionLatestVersion" ]; then
+            ViaVersionLatestMD5=$(curl --no-progress-meter \
+                "${CurlArgs[@]}" \
+                -k \
+                "https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/$ViaVersionLatestVersion/*fingerprint*/" \
+                | grep breadcrumbs | cut -d'_' -f24- | cut -d'<' -f2 | cut -d'>' -f2
+            )
+            if [ -n "$ViaVersionLatestMD5" ]; then
+                ViaVersionLocalMD5=$(md5sum plugins/ViaVersion.jar | cut -d' ' -f1)
+                if [ -e /minecraft/plugins/ViaVersion.jar ] && [ "$ViaVersionLocalMD5" = "$ViaVersionLatestMD5" ]; then
                     echo "ViaVersion is up to date"
                 else
-                    echo "Updating ViaVersion..."
-                    if [ -z "$QuietCurl" ]; then
-                        curl -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/ViaVersion.jar "https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/$ViaVersionVersion"
-                    else
-                        curl --no-progress-meter -H "Accept-Encoding: identity" -H "Accept-Language: en" -L -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36" -o /minecraft/plugins/ViaVersion.jar "https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/$ViaVersionVersion"
-                    fi
+                    echo "Updating ViaVersion ..."
+                    curl ${QuietCurl:+"--no-progress-meter"} \
+                         "${CurlArgs[@]}" \
+                         -k \
+                         -o /minecraft/plugins/ViaVersion.jar \
+                         "https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/$ViaVersionLatestVersion"
                 fi
             else
                 echo "Unable to check for updates to ViaVersion!"
@@ -226,9 +229,11 @@ else
 fi
 
 # Accept EULA
-AcceptEULA=$(echo eula=true >eula.txt)
+echo "Accepting EULA"
+echo eula=true > eula.txt
 
 # Change ports in server.properties
+echo "Setting server ports ..."
 sed -i "/server-port=/c\server-port=$Port" /minecraft/server.properties
 sed -i "/query\.port=/c\query\.port=$Port" /minecraft/server.properties
 # Change Bedrock port in Geyser config
@@ -237,12 +242,12 @@ if [ -e /minecraft/plugins/Geyser-Spigot/config.yml ]; then
 fi
 
 # Start server
-echo "Starting Minecraft server..."
+echo "Starting Minecraft server ..."
 
 if [[ -z "$MaxMemory" ]] || [[ "$MaxMemory" -le 0 ]]; then
     exec java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -jar /minecraft/paperclip.jar
 else
-    exec java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -Xmx${MaxMemory}M -jar /minecraft/paperclip.jar
+    exec java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -Xmx"${MaxMemory}"M -jar /minecraft/paperclip.jar
 fi
 
 # Exit container
