@@ -85,6 +85,20 @@ fi
 if [ -d "world" ]; then
     echo "Running backup ..."
     # Build tar args
+    tarExcludes=(
+        --exclude='./backups'
+        --exclude='./cache'
+        --exclude='./logs'
+        --exclude='./paperclip.jar'
+    )
+    if [ -n "$NoBackup" ]; then
+        echo "     Excluding the following extra items from backups: ${NoBackup}"
+        IFS=','
+        read -ra ADDR <<< "$NoBackup"
+        for i in "${ADDR[@]}"; do
+            tarExcludes+=(--exclude="./$i")
+        done
+    fi
     if [ -n "$(which pigz)" ]; then
         tarCompression="-I pigz"
         coresMsg="all cores"
@@ -93,34 +107,18 @@ if [ -d "world" ]; then
         coresMsg="single core, pigz not found"
     fi
     echo "     Backing up server ($coresMsg) to /minecraft/backups folder..."
-    tarArgs=(
-        "$tarCompression"
-        --exclude='./backups'
-        --exclude='./cache'
-        --exclude='./logs'
-        --exclude='./paperclip.jar'
-    )
-    if [ -z "$NoBackup" ]; then
-        NoBackup=""
-    else
-        echo "     Excluding the following from backups: ${NoBackup}"
-        IFS=','
-        read -ra ADDR <<< "$NoBackup"
-        for i in "${ADDR[@]}"; do
-            tarArgs+=(--exclude="./$i")
-        done
-    fi
-    tarArgs+=(
-        --checkpoint=10000
-        --checkpoint-action="echo=#%u: %{w}T"
-        --totals
-        -pcf "backups/$(date +%Y.%m.%d.%H.%M.%S)".tar.gz
-    )
-    tar "${tarArgs[@]}"  2>&1 | sed 's/^tar: /     /'
+    tar "${tarExcludes[@]}" \
+        "$tarCompression" \
+        --checkpoint=10000 \
+        --checkpoint-action="echo=#%u: %{w}T" \
+        --totals \
+        -pcf \
+        "backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz" \
+        . 2>&1 | sed 's/^Total bytes written:/     Total bytes written:/'
 fi
 
 # Rotate backups
-if [ -d /minecraft/backups ] && [ -z "$BackupCount" ]; then
+if [ -d /minecraft/backups ] && [ -n "$BackupCount" ]; then
     (
         pushd /minecraft/backups || exit
         find . -type f -printf "%T@ %p\n" | sort -n | head -n -"$BackupCount" | cut -d' ' -f2- | xargs -d '\n' rm -f --
@@ -209,7 +207,7 @@ else
             if [ -n "$ViaVersionLatestMD5" ]; then
                 ViaVersionLocalMD5=$(md5sum plugins/ViaVersion.jar | cut -d' ' -f1)
                 if [ -e /minecraft/plugins/ViaVersion.jar ] && [ "$ViaVersionLocalMD5" = "$ViaVersionLatestMD5" ]; then
-                    echo "     ViaVersion is up to date"
+                    echo "     ViaVersion is up to date: $ViaVersionLatestVersion"
                 else
                     echo "     Updating ViaVersion ..."
                     curl ${QuietCurl:+"--no-progress-meter"} \
