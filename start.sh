@@ -3,20 +3,21 @@
 # Author: James A. Chambers - https://jamesachambers.com/minecraft-java-bedrock-server-together-geyser-floodgate/
 # GitHub Repository: https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate
 
-CurlArgs=(-H "Accept-Encoding: identity"
-          -H "Accept-Language: en"
-          -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36"
-          -L
+CurlArgs=(
+    -H "Accept-Encoding: identity"
+    -H "Accept-Language: en"
+    -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4.212 Safari/537.36"
+    -L
 )
 
 # If running as root, fix ownership of all files and restart script as 'minecraft' user
 if [ "$(id -u)" = '0' ]; then
     echo "Script is running as '$(whoami)', switching to 'minecraft' user ..."
 
-    printf "\tChanging ownership of all files in /minecraft to minecraft:minecraft"
-    chown -R minecraft:minecraft /minecraft
+    echo "     Changing ownership of all files in /minecraft to 'minecraft:minecraft'"
+    chown -R minecraft:minecraft /minecraft >/dev/null
 
-    printf "\tRestarting script as 'minecraft' user\n"
+    echo "     Restarting script as 'minecraft' user"
     exec su minecraft -c "$0" "$@"
 fi
 
@@ -31,16 +32,6 @@ if ! df -h | grep -q /minecraft; then
 else
     echo "Volume mount found for /minecraft"
 fi
-
-if [ -z "$Port" ]; then
-    Port="25565"
-fi
-echo "Java port used: $Port"
-
-if [ -z "$BedrockPort" ]; then
-    Port="19132"
-fi
-echo "Bedrock port used: $BedrockPort"
 
 # Change directory to server directory
 cd /minecraft || exit
@@ -60,12 +51,12 @@ if [ ! -d "/minecraft/plugins/Geyser-Spigot" ]; then
 fi
 
 # Check if network interfaces are up
-NetworkChecks=0
 if [ -e '/sbin/route' ]; then
     DefaultRoute=$(/sbin/route -n | awk '$4 == "UG" {print $2}')
 else
     DefaultRoute=$(route -n | awk '$4 == "UG" {print $2}')
 fi
+NetworkChecks=0
 while [ -z "$DefaultRoute" ]; do
     echo "Network interface not up, will try again in 1 second"
     sleep 1
@@ -85,7 +76,7 @@ done
 if [ -z "$NoPermCheck" ]; then
     echo "Checking ownership of all server files/folders in /minecraft for user:group - '$(whoami):$(whoami)'"
     chown -R minecraft:minecraft /minecraft >/dev/null
-    printf "\tOwnership check complete.  Any errors above could indicate an issue."
+    echo "     Ownership check complete.  Any errors above could indicate an issue."
 else
     echo "Skipping ownership check due to NoPermCheck flag"
 fi
@@ -93,32 +84,39 @@ fi
 # Back up server
 if [ -d "world" ]; then
     echo "Running backup ..."
+    # Build tar args
+    if [ -n "$(which pigz)" ]; then
+        tarCompression="-I pigz"
+        coresMsg="all cores"
+    else
+        tarCompression=""
+        coresMsg="single core, pigz not found"
+    fi
+    echo "     Backing up server ($coresMsg) to /minecraft/backups folder..."
+    tarArgs=(
+        "$tarCompression"
+        --exclude='./backups'
+        --exclude='./cache'
+        --exclude='./logs'
+        --exclude='./paperclip.jar'
+    )
     if [ -z "$NoBackup" ]; then
         NoBackup=""
     else
-        printf '\tExcluding the following from backups: %s' "${NoBackup}"
-    fi
-    if [ -n "$(which pigz)" ]; then
-        printf "\tBacking up server (all cores) to /minecraft/backups folder ..."
-        tarArgs=(-I pigz --exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./paperclip.jar')
+        echo "     Excluding the following from backups: ${NoBackup}"
         IFS=','
         read -ra ADDR <<< "$NoBackup"
         for i in "${ADDR[@]}"; do
             tarArgs+=(--exclude="./$i")
         done
-        tarArgs+=(--totals --checkpoint=10000 --checkpoint-action=echo="     #%u: %{r,w}T" -pcf backups/"$(date +%Y.%m.%d.%H.%M.%S)".tar.gz ./*)
-        tar "${tarArgs[@]}"
-    else
-        printf "\tBacking up server (single core, pigz not found) to /minecraft/backups folder ..."
-        tarArgs=(--exclude='./backups' --exclude='./cache' --exclude='./logs' --exclude='./paperclip.jar')
-        IFS=','
-        read -ra ADDR <<< "$NoBackup"
-        for i in "${ADDR[@]}"; do
-            tarArgs+=(--exclude="./$i")
-        done
-        tarArgs+=(--totals --checkpoint=10000 --checkpoint-action=echo="     #%u: %{r,w}T" -pcf backups/"$(date +%Y.%m.%d.%H.%M.%S)".tar.gz ./*)
-        tar "${tarArgs[@]}"
     fi
+    tarArgs+=(
+        --checkpoint=10000
+        --checkpoint-action="echo=#%u: %{w}T"
+        --totals
+        -pcf "backups/$(date +%Y.%m.%d.%H.%M.%S)".tar.gz
+    )
+    tar "${tarArgs[@]}"  2>&1 | sed 's/^tar: /     /'
 fi
 
 # Rotate backups
@@ -157,7 +155,7 @@ if ! curl "${CurlArgs[@]}" \
           -s \
           https://api.papermc.io \
           -o /dev/null; then
-    printf "\tERROR: Unable to connect to update website (internet connection may be down).  Skipping server and plugin updates."
+    echo "ERROR:  Unable to connect to update website (internet connection may be down).  Skipping server and plugin updates."
 else
     # Get latest build number
     BuildJSON=$(curl --no-progress-meter \
@@ -169,13 +167,13 @@ else
 
     # Download latest build for the targeted version
     if [[ $Build != 0 ]]; then
-        printf "\tFound latest paperclip build %s for version %s" "$Build" "$Version"
+        echo "     Found latest paperclip build $Build for version $Version"
         curl ${QuietCurl:+"--no-progress-meter"} \
              "${CurlArgs[@]}" \
              -o /minecraft/paperclip.jar \
              "https://api.papermc.io/v2/projects/paper/versions/$Version/builds/$Build/downloads/paper-$Version-$Build.jar"
     else
-        printf "\tUnable to retrieve latest Paper build (got result of: %s)" "$Build"
+        echo "     Unable to retrieve latest Paper build (got result of: $Build)"
     fi
 
     # Update Floodgate
@@ -194,6 +192,7 @@ else
 
     if [ -z "$NoViaVersion" ]; then
         # Update ViaVersion if new version is available
+        echo "Checking the latest version of ViaVersion ..."
         ViaVersionLatestVersion=$(curl --no-progress-meter \
             "${CurlArgs[@]}" \
             -k \
@@ -210,9 +209,9 @@ else
             if [ -n "$ViaVersionLatestMD5" ]; then
                 ViaVersionLocalMD5=$(md5sum plugins/ViaVersion.jar | cut -d' ' -f1)
                 if [ -e /minecraft/plugins/ViaVersion.jar ] && [ "$ViaVersionLocalMD5" = "$ViaVersionLatestMD5" ]; then
-                    echo "ViaVersion is up to date"
+                    echo "     ViaVersion is up to date"
                 else
-                    echo "Updating ViaVersion ..."
+                    echo "     Updating ViaVersion ..."
                     curl ${QuietCurl:+"--no-progress-meter"} \
                          "${CurlArgs[@]}" \
                          -k \
@@ -229,21 +228,28 @@ else
 fi
 
 # Accept EULA
-echo "Accepting EULA"
+echo "Accepting EULA ..."
 echo eula=true > eula.txt
 
 # Change ports in server.properties
 echo "Setting server ports ..."
+if [ -z "$Port" ]; then
+    Port="25565"
+fi
+echo "     Java port used: $Port"
 sed -i "/server-port=/c\server-port=$Port" /minecraft/server.properties
 sed -i "/query\.port=/c\query\.port=$Port" /minecraft/server.properties
 # Change Bedrock port in Geyser config
+if [ -z "$BedrockPort" ]; then
+    Port="19132"
+fi
+echo "     Bedrock port used: $BedrockPort"
 if [ -e /minecraft/plugins/Geyser-Spigot/config.yml ]; then
     sed -i -z "s/  port: [0-9]*/  port: $BedrockPort/" /minecraft/plugins/Geyser-Spigot/config.yml
 fi
 
 # Start server
 echo "Starting Minecraft server ..."
-
 if [[ -z "$MaxMemory" ]] || [[ "$MaxMemory" -le 0 ]]; then
     exec java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -jar /minecraft/paperclip.jar
 else
