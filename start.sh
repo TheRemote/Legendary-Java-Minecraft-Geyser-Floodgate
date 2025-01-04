@@ -14,16 +14,16 @@ CurlArgs=(
 if [ "$(id -u)" = '0' ]; then
     echo "Script is running as '$(whoami)', switching to 'minecraft' user ..."
 
-    echo "     Changing ownership of all files in /minecraft to 'minecraft:minecraft'"
+    echo "     Changing ownership of all files in /minecraft to 'minecraft:minecraft' ..."
     chown -R minecraft:minecraft /minecraft >/dev/null
 
-    echo "     Restarting script as 'minecraft' user"
+    echo "     Restarting script as 'minecraft' user."
     exec su minecraft -c "$0" "$@"
 fi
 
 echo "Paper Minecraft Java Server Docker + Geyser/Floodgate script by James A. Chambers"
 echo "Latest version always at https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate"
-echo "Don't forget to set up port forwarding on your router!  The default port is 25565 and the Bedrock port is 19132"
+echo "Don't forget to set up port forwarding on your router!  The default port is 25565 and the Bedrock port is 19132."
 
 if ! df -h | grep -q /minecraft; then
     echo "ERROR:  A named volume was not specified for the minecraft server data.  Please create one with: docker volume create yourvolumename"
@@ -51,6 +51,7 @@ if [ ! -d "/minecraft/plugins/Geyser-Spigot" ]; then
 fi
 
 # Check if network interfaces are up
+echo "Checking network interface status ..."
 if [ -e '/sbin/route' ]; then
     DefaultRoute=$(/sbin/route -n | awk '$4 == "UG" {print $2}')
 else
@@ -58,7 +59,7 @@ else
 fi
 NetworkChecks=0
 while [ -z "$DefaultRoute" ]; do
-    echo "Network interface not up, will try again in 1 second"
+    echo "     Network interface not up, will try again in 1 second ..."
     sleep 1
     if [ -e '/sbin/route' ]; then
         DefaultRoute=$(/sbin/route -n | awk '$4 == "UG" {print $2}')
@@ -67,18 +68,21 @@ while [ -z "$DefaultRoute" ]; do
     fi
     NetworkChecks=$((NetworkChecks + 1))
     if [ $NetworkChecks -gt 20 ]; then
-        echo "Waiting for network interface to come up timed out - starting server without network connection ..."
+        echo "ERROR:  Waiting for network interface to come up timed out - starting server without network connection."
         break
+    fi
+    if [ -n "$DefaultRoute" ]; then
+      echo "     Network interface is up."
     fi
 done
 
 # Check ownership of server files
 if [ -z "$NoPermCheck" ]; then
-    echo "Checking ownership of all server files/folders in /minecraft for user:group - '$(whoami):$(whoami)'"
+    echo "Checking ownership of all server files/folders in /minecraft for user:group - '$(whoami):$(whoami)' ..."
     chown -R minecraft:minecraft /minecraft >/dev/null
     echo "     Ownership check complete.  Any errors above could indicate an issue."
 else
-    echo "Skipping ownership check due to NoPermCheck flag"
+    echo "Skipping ownership check due to NoPermCheck flag."
 fi
 
 # Back up server
@@ -109,8 +113,6 @@ if [ -d "world" ]; then
     echo "     Backing up server ($coresMsg) to /minecraft/backups folder..."
     tar "${tarExcludes[@]}" \
         "$tarCompression" \
-        --checkpoint=10000 \
-        --checkpoint-action="echo=#%u: %{w}T" \
         --totals \
         -pcf \
         "backups/$(date +%Y.%m.%d.%H.%M.%S).tar.gz" \
@@ -123,10 +125,10 @@ if [ -d /minecraft/backups ] && [ -n "$BackupCount" ]; then
         pushd /minecraft/backups || exit
         find . -type f -printf "%T@ %p\n" | sort -n | head -n -"$BackupCount" | cut -d' ' -f2- | xargs -d '\n' rm -f --
         popd || exit
-    )
+    ) > /dev/null
 fi
 # Ensure we are back in the server directory
-cd /minecraft || exit
+cd /minecraft > /dev/null || exit
 
 # Copy config files if this is a brand new server
 if [ ! -e "/minecraft/bukkit.yml" ]; then
@@ -247,7 +249,10 @@ if [ -e /minecraft/plugins/Geyser-Spigot/config.yml ]; then
 fi
 
 # Start server
+echo ""
+echo "************************************************************************"
 echo "Starting Minecraft server ..."
+echo "************************************************************************"
 if [[ -z "$MaxMemory" ]] || [[ "$MaxMemory" -le 0 ]]; then
     exec java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -jar /minecraft/paperclip.jar
 else
