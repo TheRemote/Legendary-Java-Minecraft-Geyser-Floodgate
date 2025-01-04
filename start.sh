@@ -64,6 +64,9 @@ if [ -e '/sbin/route' ]; then
 else
     DefaultRoute=$(route -n | awk '$4 == "UG" {print $2}')
 fi
+if [ -n "$DefaultRoute" ]; then
+      echo "     Network interface is up."
+fi
 NetworkChecks=0
 while [ -z "$DefaultRoute" ]; do
     echo "     Network interface not up, will try again in 1 second ..."
