@@ -3,7 +3,7 @@
 # GitHub Repository: https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate
 
 # Use Ubuntu rolling version for builder
-FROM --platform=linux/s390x ubuntu:rolling AS builder
+FROM ubuntu:rolling AS builder
 
 # Prep qemu files
 RUN apt-get update && \
