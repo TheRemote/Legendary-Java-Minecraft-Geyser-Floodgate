@@ -21,16 +21,23 @@ if [ "$(id -u)" = '0' ]; then
     exec su minecraft -c "$0" "$@"
 fi
 
+echo "################################################################################################################"
 echo "Paper Minecraft Java Server Docker + Geyser/Floodgate script by James A. Chambers"
+echo "################################################################################################################"
 echo "Latest version always at https://github.com/TheRemote/Legendary-Java-Minecraft-Geyser-Floodgate"
 echo "Don't forget to set up port forwarding on your router!  The default port is 25565 and the Bedrock port is 19132."
 
+echo ""
+echo "************************************************************************"
+echo "Prepare Environment"
+echo "************************************************************************"
+echo "Checking volume mount ..."
 if ! df -h | grep -q /minecraft; then
     echo "ERROR:  A named volume was not specified for the minecraft server data.  Please create one with: docker volume create yourvolumename"
     echo "Please pass the new volume to docker like this:  docker run -it -v yourvolumename:/minecraft"
     exit 1
 else
-    echo "Volume mount found for /minecraft"
+    echo "     Volume mount found for /minecraft"
 fi
 
 # Change directory to server directory
@@ -148,7 +155,7 @@ if [ ! -e "/minecraft/plugins/Geyser-Spigot/config.yml" ]; then
 fi
 
 # Update paperclip.jar
-echo "Updating to most recent paperclip version ..."
+echo "Updating to most recent Paper server version ..."
 
 # Test update website connectivity first
 if ! curl "${CurlArgs[@]}" \
@@ -167,7 +174,7 @@ else
 
     # Download latest build for the targeted version
     if [[ $Build != 0 ]]; then
-        echo "     Found latest paperclip build $Build for version $Version"
+        echo "     Found latest Paper build $Build for version $Version"
         curl ${QuietCurl:+"--no-progress-meter"} \
              "${CurlArgs[@]}" \
              -o /minecraft/paperclip.jar \
@@ -190,9 +197,10 @@ else
          -o /minecraft/plugins/Geyser-Spigot.jar \
          "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot"
 
+    echo "Updating ViaVersion ..."
     if [ -z "$NoViaVersion" ]; then
         # Update ViaVersion if new version is available
-        echo "Checking the latest version of ViaVersion ..."
+        echo "     Checking the latest version of ViaVersion ..."
         ViaVersionLatestVersion=$(curl --no-progress-meter \
             "${CurlArgs[@]}" \
             -k \
@@ -211,7 +219,7 @@ else
                 if [ -e /minecraft/plugins/ViaVersion.jar ] && [ "$ViaVersionLocalMD5" = "$ViaVersionLatestMD5" ]; then
                     echo "     ViaVersion is up to date: $ViaVersionLatestVersion"
                 else
-                    echo "     Updating ViaVersion ..."
+                    echo "     Downloading new version: $ViaVersionLatestVersion"
                     curl ${QuietCurl:+"--no-progress-meter"} \
                          "${CurlArgs[@]}" \
                          -k \
@@ -219,11 +227,11 @@ else
                          "https://ci.viaversion.com/job/ViaVersion/lastBuild/artifact/build/libs/$ViaVersionLatestVersion"
                 fi
             else
-                echo "Unable to check for updates to ViaVersion!"
+                echo "ERROR:  Unable to check for updates to ViaVersion!"
             fi
         fi
     else
-        echo "ViaVersion is disabled -- skipping"
+        echo "     ViaVersion is disabled -- skipping"
     fi
 fi
 
@@ -251,8 +259,9 @@ fi
 # Start server
 echo ""
 echo "************************************************************************"
-echo "Starting Minecraft server ..."
+echo "Launch Minecraft"
 echo "************************************************************************"
+echo "Starting Minecraft server ..."
 if [[ -z "$MaxMemory" ]] || [[ "$MaxMemory" -le 0 ]]; then
     exec java -XX:+UnlockDiagnosticVMOptions -XX:-UseAESCTRIntrinsics -DPaper.IgnoreJavaVersion=true -Xms400M -jar /minecraft/paperclip.jar
 else
