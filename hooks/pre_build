@@ -2,6 +2,3 @@
 
 # Register qemu-*-static for all supported processors except the current one, but also remove all registered binfmt_misc before
 docker run --rm --privileged multiarch/qemu-user-static:register --reset
-
-# Modify the docker build command to include --sbom and --provenance
-sed -i 's/docker build/docker build --sbom=true --provenance=true/' ./.dockerhub-build/build.sh
