@@ -19,7 +19,7 @@ The <a href="https://github.com/TheRemote/Legendary-Bedrock-Container" target="_
   <li>Runs Geyser to allow Bedrock clients to connect and Floodgate to allow them to authenticate with their Bedrock credentials to a Java server</li>
   <li>Uses named Docker volume for safe and easy to access storage of server data files (which enables more advanced Docker features such as automatic volume backups)</li>
   <li>Plugin support for Paper + Spigot + Bukkit</li>
-  <li>Installs and configures OpenJDK 18</li>
+  <li>Installs and configures OpenJDK</li>
   <li>Automatic backups to minecraft/backups when server restarts</li>
   <li>Updates automatically to the latest version when server is started</li>
   <li>Runs on all Docker platforms including Raspberry Pi</li>
