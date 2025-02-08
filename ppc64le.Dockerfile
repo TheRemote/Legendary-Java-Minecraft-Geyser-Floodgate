@@ -15,7 +15,7 @@ FROM --platform=linux/ppc64le ubuntu:rolling
 COPY --from=builder /usr/bin/qemu-ppc64le-static /usr/bin/
 
 # Fetch dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jre-headless tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jre-headless tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano vim -yqq && rm -rf /var/cache/apt/*
 
 # Set port environment variable
 ENV Port=25565
