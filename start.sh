@@ -9,7 +9,16 @@ if [ "$(id -u)" = '0' ]; then
 
     if ! id minecraft >/dev/null 2>&1; then
         echo "Creating 'minecraft' user..."
-        useradd -m -r -s /bin/bash -u 1002 -g 1001 minecraft
+        if [ -n "$Uid" ]; then
+            echo "...with UID: $Uid"
+            Uid="-u $Uid"
+        fi
+
+        if [ -n "$Gid" ]; then
+            echo "...with GID: $Gid"
+            Gid="-g $Gid"
+        fi
+        useradd -m -r -s /bin/bash $Uid $Gid minecraft
     fi
 
     chown -R minecraft:minecraft /minecraft

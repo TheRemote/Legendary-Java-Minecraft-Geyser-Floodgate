@@ -23,6 +23,10 @@ ENV Port=25565
 # Set Bedrock port environment variable
 ENV BedrockPort=19132
 
+# Set the UID and GID to map minecraft:minecraft to
+ENV Uid=""
+ENV Gud=""
+
 # Optional maximum memory Minecraft is allowed to use
 ENV MaxMemory=
 
