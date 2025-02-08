@@ -15,7 +15,7 @@ FROM --platform=linux/s390x ubuntu:rolling
 COPY --from=builder /usr/bin/qemu-s390x-static /usr/bin/
 
 # Fetch dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jre-headless tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support nano -yqq && rm -rf /var/cache/apt/*
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt-get install openjdk-21-jre-headless tzdata sudo curl unzip net-tools gawk openssl findutils pigz libcurl4 libc6 libcrypt1 apt-utils libcurl4-openssl-dev ca-certificates binfmt-support jq nano -yqq && rm -rf /var/cache/apt/*
 
 # Set port environment variable
 ENV Port=25565
@@ -23,11 +23,15 @@ ENV Port=25565
 # Set Bedrock port environment variable
 ENV BedrockPort=19132
 
+# Set the UID and GID to map minecraft:minecraft to
+ENV Uid=""
+ENV Gud=""
+
 # Optional maximum memory Minecraft is allowed to use
 ENV MaxMemory=
 
 # Optional Paper Minecraft Version override
-ENV Version="1.21.3"
+ENV Version="1.21.4"
 
 # Optional Timezone
 ENV TZ="America/Denver"
