@@ -164,6 +164,10 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>July 26th 2025</li>
+    <ul>
+      <li>Updated build process to use buildx for multi-arch builds</li>
+    </ul>
   <li>July 24th 2025</li>
     <ul>
       <li>Updated default version to 1.21.8 (remember, you never need to wait for updates to change Minecraft versions, just use -e Version=1.21.4)</li>

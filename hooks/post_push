@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Use manifest-tool to create the manifest
-curl -Lo manifest-tool.tar.gz https://github.com/estesp/manifest-tool/releases/download/v2.1.8/binaries-manifest-tool-2.1.8.tar.gz
-tar -xf manifest-tool.tar.gz
-chmod +x manifest-tool*
-
-ManifestTool=$(./manifest-tool-linux-amd64 push from-spec multi-arch-manifest.yaml 2>&1)
-echo "$ManifestTool"
