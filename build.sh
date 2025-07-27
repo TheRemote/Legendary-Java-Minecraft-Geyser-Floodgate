@@ -1,1 +1,1 @@
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --tag 05jchambers/legendary-minecraft-geyser-floodgate:latest --push -f Build.Dockerfile .
+docker buildx build --sbom=true --provenance=true --platform linux/amd64,linux/amd64/v2,linux/amd64/v3,linux/arm64,linux/arm/v7,linux/riscv64,linux/s390x,linux/ppc64le --tag 05jchambers/legendary-minecraft-geyser-floodgate:latest --push -f Build.Dockerfile .
