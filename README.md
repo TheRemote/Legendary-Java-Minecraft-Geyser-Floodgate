@@ -164,6 +164,11 @@ This can also be done non-persistently with the following ethtool command: <pre>
 
 <h2>Update History</h2>
 <ul>
+  <li>May 3rd 2026</li>
+    <ul>
+      <li>Update to 26.1.2</li>
+      <li>Update OpenJDK to OpenJDK 25</li>
+    </ul>
   <li>January 25th 2026</li>
     <ul>
       <li>Update to 1.21.11</li>
